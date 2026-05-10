@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Profile</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
 .profile-layout { display: grid; grid-template-columns: 320px 1fr; gap: 32px; }
 .profile-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; position: sticky; top: calc(var(--nav-h) + 24px); }
@@ -60,12 +60,12 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <a href="{{ url_for('main.index') }}" class="nav-logo">Travel<span>oop</span></a>
   <div class="nav-links">
-    <a href="03-dashboard.html">Home</a>
-    <a href="mytrips.html">My Trips</a>
-    <a href="04-create-trip.html">Plan Trip</a>
-    <a href="10-community.html">Community</a>
+    <a href="{{ url_for('main.index') }}">Home</a>
+    <a href="{{ url_for('main.mytrips') }}">My Trips</a>
+    <a href="{{ url_for('main.createtrip') }}">Plan Trip</a>
+    <a href="{{ url_for('main.index') }}">Community</a>
   </div>
   <div class="nav-avatar">AM</div>
 </nav>
@@ -108,7 +108,7 @@
             <a href="#" class="profile-link"><span class="icon">🔔</span> Notifications</a>
             <a href="#" class="profile-link"><span class="icon">🌍</span> Language & Region</a>
             <a href="#" class="profile-link"><span class="icon">⭐</span> Saved Destinations</a>
-            <a href="/login.html" class="profile-link" style="color:var(--coral);"><span class="icon">🚪</span> Sign Out</a>
+            <a href="{{ url_for('auth.login') }}" class="profile-link" style="color:var(--coral);"><span class="icon">🚪</span> Sign Out</a>
           </div>
         </div>
       </div>
@@ -143,13 +143,13 @@
         <div class="settings-card">
           <div class="settings-card-head">
             <h3>🗓️ Preplanned Trips</h3>
-            <a href="mytrips.html" style="color:var(--amber);font-size:0.85rem;text-decoration:none;font-weight:500;">View all</a>
+            <a href="{{ url_for('main.mytrips') }}" style="color:var(--amber);font-size:0.85rem;text-decoration:none;font-weight:500;">View all</a>
           </div>
           <div class="settings-card-body">
             <div class="trips-thumb-grid">
               <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#4facfe,#00c9ff);">🌏</div><div class="overlay"></div><div class="label"><div class="city">SE Asia Loop</div><div class="date">Jun 10–28</div></div></div>
               <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">🏔️</div><div class="overlay"></div><div class="label"><div class="city">Swiss Alps</div><div class="date">Aug 3–10</div></div></div>
-              <div class="thumb-card" style="background:var(--sand-light);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border);" onclick="location.href='04-create-trip.html'">
+              <div class="thumb-card" style="background:var(--sand-light);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border);" onclick="location.href='{{ url_for('main.createtrip') }}'">
                 <div style="text-align:center;color:var(--text-light);">
                   <div style="font-size:1.5rem;">+</div>
                   <div style="font-size:0.72rem;margin-top:4px;">New Trip</div>
@@ -163,7 +163,7 @@
         <div class="settings-card">
           <div class="settings-card-head">
             <h3>✈️ Previous Trips</h3>
-            <a href="mytrips.html" style="color:var(--amber);font-size:0.85rem;text-decoration:none;font-weight:500;">View all</a>
+            <a href="{{ url_for('main.mytrips') }}" style="color:var(--amber);font-size:0.85rem;text-decoration:none;font-weight:500;">View all</a>
           </div>
           <div class="settings-card-body">
             <div class="trips-thumb-grid">
@@ -207,5 +207,6 @@
     </div>
   </div>
 </div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

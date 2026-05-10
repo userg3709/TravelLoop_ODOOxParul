@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Build Itinerary</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
 .builder-layout { display: grid; grid-template-columns: 1fr 360px; gap: 28px; }
 .section-block { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; transition: box-shadow 0.2s; }
@@ -64,17 +64,17 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <a href="{{ url_for('main.index') }}" class="nav-logo">Travel<span>oop</span></a>
   <div class="nav-links">
-    <a href="03-dashboard.html">Home</a>
-    <a href="06-my-trips.html">My Trips</a>
-    <a href="04-create-trip.html" class="active">Plan Trip</a>
-    <a href="10-community.html">Community</a>
+    <a href="{{ url_for('main.index') }}">Home</a>
+    <a href="{{ url_for('main.mytrips') }}">My Trips</a>
+    <a href="{{ url_for('main.createtrip') }}" class="active">Plan Trip</a>
+    <a href="{{ url_for('main.index') }}">Community</a>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <button class="btn btn-outline btn-sm">👁 Preview</button>
-    <button class="btn btn-primary btn-sm" onclick="location.href='09-itinerary-view.html'">Save & View →</button>
-    <div class="nav-avatar nav-links"><a href="07-user-profile.html">AM</a></div>
+    <button class="btn btn-primary btn-sm" onclick="location.href='{{ url_for('main.itinerary') }}'">Save & View →</button>
+    <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
   </div>
 </nav>
 
@@ -82,7 +82,7 @@
   <div class="page-hero">
     <div class="content">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-        <a href="04-create-trip.html" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">← Create Trip</a>
+        <a href="{{ url_for('main.createtrip') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">← Create Trip</a>
         <span style="color:rgba(255,255,255,0.3);">/</span>
         <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Itinerary Builder</span>
       </div>
@@ -254,14 +254,15 @@
         <div class="card card-pad">
           <h4 style="font-weight:600;font-size:0.9rem;color:var(--navy);margin-bottom:12px;">⚡ Quick Actions</h4>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <a href="08-activity-search.html" class="btn btn-outline btn-sm" style="justify-content:center;">🔍 Search Activities</a>
-            <a href="11-packing.html" class="btn btn-outline btn-sm" style="justify-content:center;">🧳 Packing Checklist</a>
-            <a href="13-trip-notes.html" class="btn btn-outline btn-sm" style="justify-content:center;">📝 Trip Notes</a>
+            <a href="{{ url_for('main.activities') }}" class="btn btn-outline btn-sm" style="justify-content:center;">🔍 Search Activities</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">🧳 Packing Checklist</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">📝 Trip Notes</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

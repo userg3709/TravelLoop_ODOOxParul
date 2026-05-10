@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Register</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
 <style>
 body { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6a 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
@@ -42,12 +42,12 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6a 100%); min-he
 <div class="reg-card">
 
   <div class="reg-header">
-    <a href="01-login.html" class="logo">Travel<span>oop</span></a>
+    <a href="{{ url_for('auth.login') }}" class="logo">Travel<span>oop</span></a>
     <h2>Create your account</h2>
     <p>Start planning unforgettable journeys today</p>
   </div>
 
-  <form action="/register" method="POST" class="form-stack">
+  <form action="{{ url_for('auth.register') }}" method="POST" class="form-stack">
 
   <div class="form-grid">
 
@@ -107,5 +107,6 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6a 100%); min-he
 
 </div>
 
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

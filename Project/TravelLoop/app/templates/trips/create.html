@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Create Trip</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
 .create-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; }
 .cover-upload { border-radius: var(--radius-md); border: 2px dashed var(--border); background: var(--sand-light); aspect-ratio: 16/6; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; gap: 10px; }
@@ -56,14 +56,14 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <a href="{{ url_for('main.index') }}" class="nav-logo">Travel<span>oop</span></a>
   <div class="nav-links">
-    <a href="03-dashboard.html">Home</a>
-    <a href="06-my-trips.html">My Trips</a>
-    <a href="04-create-trip.html" class="active">Plan Trip</a>
-    <a href="10-community.html">Community</a>
+    <a href="{{ url_for('main.index') }}">Home</a>
+    <a href="{{ url_for('main.mytrips') }}">My Trips</a>
+    <a href="{{ url_for('main.createtrip') }}" class="active">Plan Trip</a>
+    <a href="{{ url_for('main.index') }}">Community</a>
   </div>
-  <div class="nav-avatar nav-links"><a href="07-user-profile.html">AM</a></div>
+  <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
 </nav>
 
 <div class="page-wrap">
@@ -186,8 +186,8 @@
         </div>
 
         <div style="display:flex;gap:12px;">
-          <button class="btn btn-outline" onclick="location.href='03-dashboard.html'">← Cancel</button>
-          <button class="btn btn-primary btn-lg" style="flex:1;justify-content:center;" onclick="location.href='05-itinerary-builder.html'">Save & Build Itinerary →</button>
+          <button class="btn btn-outline" onclick="location.href='{{ url_for('main.index') }}'">← Cancel</button>
+          <button class="btn btn-primary btn-lg" style="flex:1;justify-content:center;" onclick="location.href='{{ url_for('main.itinerary_builder') }}'">Save & Build Itinerary →</button>
         </div>
       </div>
 
@@ -249,5 +249,6 @@
 document.querySelectorAll('.sug-card').forEach(c => c.addEventListener('click', () => c.classList.toggle('selected')));
 document.querySelectorAll('.type-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.type-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
 </script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

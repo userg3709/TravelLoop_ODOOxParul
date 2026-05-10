@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Login</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
 <style>
 body { background: var(--navy); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
@@ -85,7 +85,7 @@ body { background: var(--navy); display: flex; align-items: center; justify-cont
     <h3>Welcome back</h3>
     <div class="sub">Sign in to continue your journey</div>
 
-    <form action="/login" method="POST" class="form-stack">
+    <form action="{{ url_for('auth.login') }}" method="POST" class="form-stack">
 
       <div class="field">
         <label>Email Address</label>
@@ -110,7 +110,7 @@ body { background: var(--navy); display: flex; align-items: center; justify-cont
       </div>
 
       <div class="signup-link">
-  Don't have an account? <a href="/registerpage">Sign up free</a>
+  Don't have an account? <a href="{{ url_for('main.register') }}">Sign up free</a>
 </div>
 
     </form>
@@ -118,5 +118,6 @@ body { background: var(--navy); display: flex; align-items: center; justify-cont
 
 </div>
 
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

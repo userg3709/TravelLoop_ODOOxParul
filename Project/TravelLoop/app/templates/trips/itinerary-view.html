@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Itinerary View</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
 .itinerary-layout { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
 .view-toggle { display: flex; gap: 4px; background: white; border: 1.5px solid var(--border); border-radius: 8px; padding: 3px; }
@@ -77,14 +77,14 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <a href="{{ url_for('main.index') }}" class="nav-logo">Travel<span>oop</span></a>
   <div class="nav-links">
-    <a href="03-dashboard.html">Home</a>
-    <a href="06-my-trips.html">My Trips</a>
-    <a href="04-create-trip.html">Plan Trip</a>
+    <a href="{{ url_for('main.index') }}">Home</a>
+    <a href="{{ url_for('main.mytrips') }}">My Trips</a>
+    <a href="{{ url_for('main.createtrip') }}">Plan Trip</a>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
-    <button class="btn btn-outline btn-sm" onclick="location.href='05-itinerary-builder.html'">✏️ Edit</button>
+    <button class="btn btn-outline btn-sm" onclick="location.href='{{ url_for('main.itinerary_builder') }}'">✏️ Edit</button>
     <div class="nav-avatar">AM</div>
   </div>
 </nav>
@@ -93,7 +93,7 @@
   <div class="page-hero">
     <div class="content" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
       <div>
-        <a href="06-my-trips.html" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">← My Trips</a>
+        <a href="{{ url_for('main.mytrips') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">← My Trips</a>
         <h1 style="margin-top:6px;">Southeast Asia Loop</h1>
         <p>Jun 10 – Jun 28, 2025 · 18 days · Solo traveller</p>
       </div>
@@ -281,9 +281,9 @@
         <div class="budget-card" style="overflow:visible;">
           <div class="budget-card-head"><h4>⚡ Quick Actions</h4></div>
           <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
-            <a href="11-packing.html" class="btn btn-outline btn-sm" style="justify-content:center;">🧳 Packing Checklist</a>
-            <a href="13-trip-notes.html" class="btn btn-outline btn-sm" style="justify-content:center;">📝 Trip Notes</a>
-            <a href="14-invoice.html" class="btn btn-outline btn-sm" style="justify-content:center;">🧾 View Invoice</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">🧳 Packing Checklist</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">📝 Trip Notes</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">🧾 View Invoice</a>
           </div>
         </div>
       </div>
@@ -293,5 +293,6 @@
 <script>
 document.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.view-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
 </script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

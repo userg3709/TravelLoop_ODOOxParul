@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Search Activities</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
 .search-layout { display: grid; grid-template-columns: 280px 1fr; gap: 28px; }
 .filter-panel { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 24px; position: sticky; top: calc(var(--nav-h) + 24px); height: fit-content; }
@@ -55,14 +55,14 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <a href="{{ url_for('main.index') }}" class="nav-logo">Travel<span>oop</span></a>
   <div class="nav-links">
-    <a href="03-dashboard.html">Home</a>
-    <a href="06-my-trips.html">My Trips</a>
-    <a href="04-create-trip.html">Plan Trip</a>
-    <a href="10-community.html">Community</a>
+    <a href="{{ url_for('main.index') }}">Home</a>
+    <a href="{{ url_for('main.mytrips') }}">My Trips</a>
+    <a href="{{ url_for('main.createtrip') }}">Plan Trip</a>
+    <a href="{{ url_for('main.index') }}">Community</a>
   </div>
-  <div class="nav-avatar nav-links"><a href="07-user-profile.html">AM</a></div>
+  <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
 </nav>
 
 <div class="page-wrap">
@@ -250,6 +250,8 @@
 <script>
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
 document.querySelectorAll('.sort-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.sort-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
+document.querySelectorAll('.result-meta .btn').forEach(b => b.addEventListener('click', (event) => { event.stopPropagation(); b.textContent = 'Added'; b.disabled = true; }));
 </script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
