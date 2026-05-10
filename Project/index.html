@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Feature — Mr. Umesh Patel</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --bg-color: #F8F8F8; /* Light gray */
+      --card-bg: #FFDEAD; /* Puff Peach */
+      --highlight-yellow: #0b392d; /* Pastel Yellow */
+      --highlight-orchard: #170f36; /* Pastel Orchard Yellow */
+      --text-dark: #333333; /* Dark text */
+      --text-dark: #333333; /* Dark text */
+      --shape-red: #D2042D; /* Cherry Red */
+      --shape-yellow: #a35538; /* Pastel Orchard Yellow */
+      --shape-pastely: #FFFFB3; /* Pastel Yellow */
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      font-family: Arial, sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      color: var(--highlight-yellow);
+    }
+
+    a {
+      color: var(--highlight-orchard);
+    }
+
+    /* Shapes */
+    .shape {
+      position: absolute;
+      opacity: 0.15;
+      z-index: 1;
+    }
+    .shape.circle { border-radius: 50%; }
+    .shape.rect { border-radius: 8px; }
+    .shape.triangle {
+      width: 0; height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 35px solid;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-5 relative">
+
+  <!-- 25 Decorative Shapes -->
+  <div class="shape circle" style="width:80px;height:80px;top:5%;left:5%;background-color:var(--shape-red);"></div>
+  <div class="shape circle" style="width:50px;height:50px;top:10%;left:30%;background-color:var(--shape-yellow);"></div>
+  <div class="shape circle" style="width:60px;height:60px;top:20%;left:60%;background-color:var(--shape-pastely);"></div>
+  <div class="shape circle" style="width:40px;height:40px;top:50%;left:10%;background-color:var(--shape-red);"></div>
+  <div class="shape circle" style="width:70px;height:70px;top:80%;left:20%;background-color:var(--shape-yellow);"></div>
+  
+  <div class="shape rect" style="width:50px;height:50px;top:15%;left:15%;background-color:var(--shape-yellow);"></div>
+  <div class="shape rect" style="width:60px;height:60px;top:30%;left:70%;background-color:var(--shape-pastely);"></div>
+  <div class="shape rect" style="width:40px;height:40px;top:60%;left:50%;background-color:var(--shape-red);"></div>
+  <div class="shape rect" style="width:50px;height:50px;top:75%;left:30%;background-color:var(--shape-yellow);"></div>
+  <div class="shape rect" style="width:45px;height:45px;top:5%;left:80%;background-color:var(--shape-pastely);"></div>
+  
+  <div class="shape triangle" style="top:10%;left:50%;border-bottom-color:var(--shape-red);"></div>
+  <div class="shape triangle" style="top:20%;left:80%;border-bottom-color:var(--shape-yellow);"></div>
+  <div class="shape triangle" style="top:35%;left:15%;border-bottom-color:var(--shape-pastely);"></div>
+  <div class="shape triangle" style="top:60%;left:60%;border-bottom-color:var(--shape-red);"></div>
+  <div class="shape triangle" style="top:80%;left:40%;border-bottom-color:var(--shape-yellow);"></div>
+  
+  <div class="shape circle" style="width:30px;height:30px;top:40%;left:80%;background-color:var(--shape-pastely);"></div>
+  <div class="shape circle" style="width:35px;height:35px;top:25%;left:40%;background-color:var(--shape-red);"></div>
+  <div class="shape circle" style="width:60px;height:60px;top:70%;left:70%;background-color:var(--shape-yellow);"></div>
+  <div class="shape rect" style="width:50px;height:50px;top:50%;left:25%;background-color:var(--shape-pastely);"></div>
+  <div class="shape rect" style="width:40px;height:40px;top:65%;left:85%;background-color:var(--shape-red);"></div>
+  
+  <div class="shape triangle" style="top:5%;left:70%;border-bottom-color:var(--shape-pastely);"></div>
+  <div class="shape triangle" style="top:55%;left:5%;border-bottom-color:var(--shape-yellow);"></div>
+  <div class="shape circle" style="width:45px;height:45px;top:30%;left:90%;background-color:var(--shape-red);"></div>
+  <div class="shape rect" style="width:60px;height:60px;top:90%;left:60%;background-color:var(--shape-yellow);"></div>
+  <div class="shape circle" style="width:50px;height:50px;top:85%;left:10%;background-color:var(--shape-pastely);"></div>
+
+  <!-- Main card -->
+  <div class="card w-full max-w-3xl p-6 sm:p-8 md:p-10">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">Professional Insight: Mr. Umesh Patel</h1>
+      <p class="text-lg sm:text-xl font-semibold mb-1">Assistant General Manager, Aptech Ltd., Mumbai, India</p>
+      <a href="https://www.linkedin.com/in/umesh-patel-4b42038/?originalSubdomain=in" target="_blank" class="hover:underline">LinkedIn Profile</a>
+    </div>
+
+    <div class="space-y-4 text-base sm:text-lg text-gray-800">
+      <p>
+        Mr. Umesh Patel is a distinguished professional in the education and training sector, currently serving as <strong>Assistant General Manager (AGM)</strong> at Aptech Ltd., a leading vocational training organization headquartered in Mumbai. In this senior leadership capacity, he plays a pivotal role in guiding academic and operational excellence, contributing to the organization’s mission of delivering industry‑aligned skills training across diverse technology and media domains.
+      </p>
+
+      <p>
+        Throughout his career, Mr. Patel has demonstrated exceptional expertise in educational leadership, institutional strategy, and corporate training. He has successfully led programs bridging academic learning with real‑world industry requirements. At Aptech, his responsibilities include enhancing curriculum relevance, optimizing training delivery, and coordinating cross-functional teams to ensure high-quality outcomes in student experience and employer engagement.
+      </p>
+
+      <p>
+        In his role as AGM, Mr. Patel also spearheads strategic initiatives to expand Aptech’s reach in virtual production and emerging technology training — critical areas in today’s evolving digital economy. He collaborates with academic partners, industry experts, and operational teams to refine training pathways that align with workforce needs while fostering innovation and continuous improvement.
+      </p>
+
+      <p>
+        Across his professional journey, Mr. Patel has cultivated strengths in administrative leadership, performance management, and stakeholder collaboration. His contributions have been instrumental in program expansion, quality assurance, and building industry partnerships, ensuring that Aptech maintains its competitive edge in the education sector.
+      </p>
+
+      <p>
+        Colleagues and peers recognize Mr. Patel as a leader who combines strategic foresight with practical execution, ensuring that training solutions remain relevant, scalable, and impactful for learners and industry stakeholders alike. His ongoing work exemplifies a steadfast commitment to advancing vocational skills training and preparing India’s workforce for the future.
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>
