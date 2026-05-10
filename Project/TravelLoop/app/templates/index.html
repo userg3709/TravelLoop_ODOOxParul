@@ -1,5 +1,307 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop – Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.hero-banner {
+  background: linear-gradient(160deg, #0f1f3d 0%, #1a3a6a 55%, #0d3347 100%);
+  min-height: 380px; display: flex; align-items: flex-end; position: relative; overflow: hidden;
+  padding: 48px 40px 40px;
+}
+.hero-banner::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 80% at 80% 50%, rgba(212,136,42,0.2) 0%, transparent 70%);
+}
+.hero-globe { position: absolute; right: -40px; top: -40px; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.06); }
+.hero-globe::after { content: ''; position: absolute; width: 200px; height: 200px; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); border: 1px solid rgba(255,255,255,0.06); }
+.hero-content { position: relative; z-index: 1; max-width: 700px; }
+.hero-greeting { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.hero-greeting .wave { font-size: 1.25rem; }
+.hero-greeting span { color: rgba(255,255,255,0.65); font-size: 0.9rem; }
+.hero-content h1 { font-family: var(--font-display); font-size: 2.75rem; color: white; line-height: 1.15; margin-bottom: 16px; }
+.hero-content h1 em { color: var(--amber-light); font-style: italic; }
+.hero-content p { color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 28px; max-width: 480px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-stats { display: flex; gap: 32px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+.hero-stat .num { font-family: var(--font-display); font-size: 1.75rem; color: white; font-weight: 700; }
+.hero-stat .lbl { color: rgba(255,255,255,0.5); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
 
-{% block content %}
-<h1>TravelLoop</h1>
-{% endblock %}
+.search-bar-wrap { background: white; border-radius: var(--radius-lg); padding: 20px 24px; margin: -28px 40px 0; position: relative; z-index: 10; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); }
+.search-input { flex: 1; display: flex; align-items: center; gap: 10px; }
+.search-icon { font-size: 1.1rem; color: var(--text-light); }
+.search-input input { flex: 1; border: none; outline: none; font-family: var(--font-body); font-size: 0.95rem; color: var(--text-dark); background: transparent; }
+.search-input input::placeholder { color: var(--text-light); }
+.search-divider { width: 1px; height: 32px; background: var(--border); }
+.search-filter { display: flex; align-items: center; gap: 8px; color: var(--text-mid); font-size: 0.875rem; cursor: pointer; }
+
+.main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 32px; }
+.destinations-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.dest-card { border-radius: var(--radius-md); overflow: hidden; cursor: pointer; transition: transform 0.25s, box-shadow 0.25s; position: relative; aspect-ratio: 3/4; }
+.dest-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.dest-card .bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+.dest-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,31,61,0.85) 0%, transparent 55%); }
+.dest-card .info { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; color: white; }
+.dest-card .city { font-family: var(--font-display); font-size: 1rem; font-weight: 600; }
+.dest-card .country { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+.dest-card .price { font-size: 0.78rem; color: var(--amber-light); font-weight: 600; margin-top: 4px; }
+.dest-card .tag { position: absolute; top: 12px; left: 12px; background: var(--amber); color: white; font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+
+.dest-bgs { background: #e8f4f8; }
+.bg-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.bg-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.bg-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.bg-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.bg-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.trips-section { display: flex; flex-direction: column; gap: 16px; }
+.trip-row { background: white; border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; }
+.trip-row:hover { box-shadow: var(--shadow-md); transform: translateX(4px); border-color: var(--amber); }
+.trip-thumb { width: 64px; height: 64px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; }
+.trip-info { flex: 1; min-width: 0; }
+.trip-info h4 { font-weight: 600; font-size: 0.95rem; color: var(--navy); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trip-info p { color: var(--text-light); font-size: 0.8rem; }
+.trip-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.trip-meta .days { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-light); }
+.trip-meta .cost { font-weight: 600; color: var(--navy); font-size: 0.9rem; }
+
+.sidebar-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; margin-bottom: 20px; }
+.sidebar-card-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.sidebar-card-head h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); }
+.sidebar-card-head a { font-size: 0.8rem; color: var(--amber); text-decoration: none; font-weight: 500; }
+.sidebar-card-body { padding: 16px 20px; }
+
+.weather-widget { background: linear-gradient(135deg, #4facfe, #00c9ff); border-radius: var(--radius-md); padding: 20px; color: white; margin-bottom: 20px; }
+.weather-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.weather-city { font-weight: 600; font-size: 0.9rem; opacity: 0.9; }
+.weather-temp { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; line-height: 1; }
+.weather-desc { font-size: 0.8rem; opacity: 0.8; }
+.weather-icon { font-size: 2rem; }
+.weather-row { display: flex; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+.weather-item { flex: 1; text-align: center; }
+.weather-item .day { font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; }
+.weather-item .icon { font-size: 1.1rem; margin: 4px 0; }
+.weather-item .temp { font-size: 0.8rem; font-weight: 600; }
+
+.quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-box { background: var(--sand-light); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.stat-box .val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+.stat-box .key { font-size: 0.72rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+@media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .destinations-grid { grid-template-columns: repeat(2, 1fr); } .search-bar-wrap { margin: -20px 16px 0; } .hero-banner { padding: 32px 20px 36px; min-height: 300px; } .hero-content h1 { font-size: 1.9rem; } .hero-stats { gap: 20px; } }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <div class="nav-links">
+    <a href="03-dashboard.html" class="active">Home</a>
+    <a href="06-my-trips.html">My Trips</a>
+    <a href="04-create-trip.html">Plan Trip</a>
+    <a href="10-community.html">Community</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="btn btn-primary btn-sm" onclick="location.href='04-create-trip.html'">+ New Trip</button>
+    <div class="nav-avatar nav-links"><a href="07-user-profile.html">AM</a></div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-globe"></div>
+    <div class="hero-content fade-up">
+      <div class="hero-greeting">
+        <span class="wave">👋</span>
+        <span>Good morning, Alex</span>
+      </div>
+      <h1>Where will your next <em>adventure</em> take you?</h1>
+      <p>Discover destinations, build itineraries and travel smarter with AI-powered planning tools.</p>
+      <div class="hero-actions">
+        <a href="04-create-trip.html" class="btn btn-primary btn-lg">✈️ Plan a Trip</a>
+        <a href="10-community.html" class="btn btn-lg" style="background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.2);">🌍 Explore Community</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">5</div><div class="lbl">Trips Planned</div></div>
+        <div class="hero-stat"><div class="num">12</div><div class="lbl">Cities Visited</div></div>
+        <div class="hero-stat"><div class="num">$8.4k</div><div class="lbl">Total Budgeted</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar-wrap fade-up">
+    <div class="search-input">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search destinations, activities, hotels…">
+    </div>
+    <div class="search-divider"></div>
+    <div class="search-filter">📅 Any Date</div>
+    <div class="search-divider"></div>
+    <div class="search-filter">👥 Travellers</div>
+    <button class="btn btn-primary btn-sm">Search</button>
+  </div>
+
+  <div class="content-wide" style="margin-top:40px;">
+    <div class="main-grid">
+      <!-- Main Content -->
+      <div>
+        <!-- Top Destinations -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div>
+            <div class="section-title">Top Regional Picks</div>
+            <div class="section-sub">Handpicked destinations for every type of traveler</div>
+          </div>
+          <a href="08-activity-search.html" style="color:var(--amber);font-size:0.875rem;font-weight:600;text-decoration:none;">View all →</a>
+        </div>
+        <div class="destinations-grid" style="margin-bottom:48px;">
+          <div class="dest-card" style="aspect-ratio:unset;height:220px;">
+            <div class="bg bg-1" style="position:absolute;inset:0;font-size:3rem;display:flex;align-items:center;justify-content:center;">🗼</div>
+            <div class="overlay"></div>
+            <div class="tag">Popular</div>
+            <div class="info"><div class="city">Paris</div><div class="country">France</div><div class="price">From $1,200</div></div>
+          </div>
+          <div class="dest-card" style="aspect-ratio:unset;height:220px;">
+            <div class="bg bg-2" style="position:absolute;inset:0;font-size:3rem;display:flex;align-items:center;justify-content:center;">⛩️</div>
+            <div class="overlay"></div>
+            <div class="info"><div class="city">Tokyo</div><div class="country">Japan</div><div class="price">From $2,100</div></div>
+          </div>
+          <div class="dest-card" style="aspect-ratio:unset;height:220px;">
+            <div class="bg bg-3" style="position:absolute;inset:0;font-size:3rem;display:flex;align-items:center;justify-content:center;">🏖️</div>
+            <div class="overlay"></div>
+            <div class="tag">Trending</div>
+            <div class="info"><div class="city">Bali</div><div class="country">Indonesia</div><div class="price">From $950</div></div>
+          </div>
+          <div class="dest-card" style="aspect-ratio:unset;height:220px;">
+            <div class="bg bg-4" style="position:absolute;inset:0;font-size:3rem;display:flex;align-items:center;justify-content:center;">🏛️</div>
+            <div class="overlay"></div>
+            <div class="info"><div class="city">Rome</div><div class="country">Italy</div><div class="price">From $1,450</div></div>
+          </div>
+        </div>
+
+        <!-- Previous Trips -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div>
+            <div class="section-title">Previous Trips</div>
+            <div class="section-sub">Your recent travel memories</div>
+          </div>
+          <a href="06-my-trips.html" style="color:var(--amber);font-size:0.875rem;font-weight:600;text-decoration:none;">View all →</a>
+        </div>
+        <div class="trips-section">
+          <div class="trip-row" onclick="location.href='09-itinerary-view.html'">
+            <div class="trip-thumb bg-1">🗼</div>
+            <div class="trip-info">
+              <h4>Paris & Amsterdam Escape</h4>
+              <p>📍 France, Netherlands · Mar 12 – Mar 22, 2025</p>
+            </div>
+            <div class="trip-meta">
+              <span class="badge badge-teal">Completed</span>
+              <div class="days">10 days</div>
+              <div class="cost">$2,840</div>
+            </div>
+          </div>
+          <div class="trip-row" onclick="location.href='09-itinerary-view.html'">
+            <div class="trip-thumb bg-2">🗽</div>
+            <div class="trip-info">
+              <h4>East Coast Road Trip</h4>
+              <p>📍 New York, Boston, DC · Jan 5 – Jan 14, 2025</p>
+            </div>
+            <div class="trip-meta">
+              <span class="badge badge-teal">Completed</span>
+              <div class="days">9 days</div>
+              <div class="cost">$1,920</div>
+            </div>
+          </div>
+          <div class="trip-row" onclick="location.href='09-itinerary-view.html'">
+            <div class="trip-thumb bg-3">🏝️</div>
+            <div class="trip-info">
+              <h4>Bali Wellness Retreat</h4>
+              <p>📍 Ubud, Seminyak, Nusa Penida · Nov 2024</p>
+            </div>
+            <div class="trip-meta">
+              <span class="badge badge-teal">Completed</span>
+              <div class="days">12 days</div>
+              <div class="cost">$1,540</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:24px;">
+          <a href="04-create-trip.html" class="btn btn-outline">+ Plan a New Trip</a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div class="weather-widget">
+          <div class="weather-top">
+            <div>
+              <div class="weather-city">📍 New York, US</div>
+              <div class="weather-temp">72°</div>
+              <div class="weather-desc">Partly Cloudy · Feels like 70°</div>
+            </div>
+            <div class="weather-icon">⛅</div>
+          </div>
+          <div class="weather-row">
+            <div class="weather-item"><div class="day">Mon</div><div class="icon">🌤️</div><div class="temp">74°</div></div>
+            <div class="weather-item"><div class="day">Tue</div><div class="icon">🌧️</div><div class="temp">65°</div></div>
+            <div class="weather-item"><div class="day">Wed</div><div class="icon">☀️</div><div class="temp">78°</div></div>
+            <div class="weather-item"><div class="day">Thu</div><div class="icon">⛅</div><div class="temp">71°</div></div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <h4>📊 Your Stats</h4>
+            <a href="12-admin.html">Details</a>
+          </div>
+          <div class="sidebar-card-body">
+            <div class="quick-stats">
+              <div class="stat-box"><div class="val">5</div><div class="key">Total Trips</div></div>
+              <div class="stat-box"><div class="val">12</div><div class="key">Cities</div></div>
+              <div class="stat-box"><div class="val">3</div><div class="key">Countries</div></div>
+              <div class="stat-box"><div class="val">47</div><div class="key">Days Away</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <h4>⏰ Upcoming Trips</h4>
+            <a href="06-my-trips.html">All trips</a>
+          </div>
+          <div class="sidebar-card-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🗺️</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;font-size:0.875rem;color:var(--navy);">Southeast Asia Loop</div>
+                <div style="font-size:0.75rem;color:var(--text-light);">Jun 10 – Jun 28</div>
+              </div>
+              <div class="badge badge-amber">18d</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#fa709a,#fee140);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🏔️</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;font-size:0.875rem;color:var(--navy);">Swiss Alps Hiking</div>
+                <div style="font-size:0.75rem;color:var(--text-light);">Aug 3 – Aug 10</div>
+              </div>
+              <div class="badge badge-navy">7d</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-head"><h4>💡 Travel Tips</h4></div>
+          <div class="sidebar-card-body">
+            <p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">Book flights 6–8 weeks ahead for the best prices. Enable price alerts on popular routes to catch deals early.</p>
+            <div style="margin-top:12px;padding:10px;background:var(--sand-light);border-radius:8px;font-size:0.8rem;color:var(--text-mid);">💰 Average savings: <strong style="color:var(--navy);">$340/trip</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

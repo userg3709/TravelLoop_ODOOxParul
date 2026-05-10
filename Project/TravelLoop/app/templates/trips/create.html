@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop – Create Trip</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.create-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; }
+.cover-upload { border-radius: var(--radius-md); border: 2px dashed var(--border); background: var(--sand-light); aspect-ratio: 16/6; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; gap: 10px; }
+.cover-upload:hover { border-color: var(--amber); background: #fef9f0; }
+.cover-upload .icon { font-size: 2.5rem; }
+.cover-upload h4 { font-weight: 600; color: var(--navy); font-size: 0.95rem; }
+.cover-upload p { color: var(--text-light); font-size: 0.8rem; text-align: center; }
+.suggestions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.sug-card { border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; position: relative; height: 100px; }
+.sug-card:hover { border-color: var(--amber); transform: scale(1.03); }
+.sug-card .sug-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+.sug-card .sug-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,31,61,0.8) 0%, transparent 60%); }
+.sug-card .sug-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 10px; color: white; }
+.sug-card .sug-info .name { font-size: 0.8rem; font-weight: 600; }
+.sug-card .sug-info .country { font-size: 0.7rem; opacity: 0.75; }
+.sug-card.selected { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(212,136,42,0.25); }
+.sug-card .check { position: absolute; top: 6px; right: 6px; background: var(--amber); color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; display: none; }
+.sug-card.selected .check { display: flex; }
+
+.trip-type-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.type-btn { padding: 10px 18px; border-radius: 40px; border: 1.5px solid var(--border); background: white; font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.type-btn:hover { border-color: var(--amber); }
+.type-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+.sidebar-panel { position: sticky; top: calc(var(--nav-h) + 24px); display: flex; flex-direction: column; gap: 20px; }
+.summary-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; }
+.summary-head { background: var(--navy); color: white; padding: 16px 20px; }
+.summary-head h4 { font-family: var(--font-display); font-size: 1.1rem; }
+.summary-head p { font-size: 0.8rem; opacity: 0.7; margin-top: 2px; }
+.summary-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.summary-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; }
+.summary-row .label { color: var(--text-light); }
+.summary-row .val { color: var(--navy); font-weight: 600; }
+.progress-bar { background: var(--sand-light); border-radius: 4px; height: 6px; margin-top: 4px; }
+.progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--amber), var(--amber-light)); transition: width 0.5s; }
+
+.ai-tip { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: var(--radius-md); padding: 20px; color: white; }
+.ai-tip .ai-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(212,136,42,0.2); border: 1px solid rgba(212,136,42,0.4); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; font-weight: 600; color: var(--amber-light); margin-bottom: 10px; }
+.ai-tip p { font-size: 0.85rem; opacity: 0.8; line-height: 1.6; }
+.ai-tip .tip-cta { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tip-chip { background: rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 12px; font-size: 0.78rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s; }
+.tip-chip:hover { background: rgba(255,255,255,0.2); }
+
+.form-section { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; }
+.form-section h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--navy); margin-bottom: 4px; }
+.form-section .desc { color: var(--text-light); font-size: 0.82rem; margin-bottom: 20px; }
+
+@media (max-width: 900px) { .create-layout { grid-template-columns: 1fr; } .sidebar-panel { position: static; } .suggestions-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <div class="nav-links">
+    <a href="03-dashboard.html">Home</a>
+    <a href="06-my-trips.html">My Trips</a>
+    <a href="04-create-trip.html" class="active">Plan Trip</a>
+    <a href="10-community.html">Community</a>
+  </div>
+  <div class="nav-avatar nav-links"><a href="07-user-profile.html">AM</a></div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-hero">
+    <div class="content">
+      <h1>✈️ Plan a New Trip</h1>
+      <p>Fill in the details and we'll help you build the perfect itinerary</p>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="create-layout">
+      <div>
+        <!-- Cover Photo -->
+        <div class="form-section">
+          <h3>Trip Cover</h3>
+          <div class="desc">Add a cover image to make your trip stand out</div>
+          <div class="cover-upload">
+            <div class="icon">🖼️</div>
+            <h4>Upload Cover Photo</h4>
+            <p>Drag & drop or click to browse<br>JPG, PNG up to 10MB</p>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="form-section">
+          <h3>Trip Details</h3>
+          <div class="desc">Give your adventure a name and set your travel window</div>
+          <div class="form-stack" style="gap:16px;">
+            <div class="field">
+              <label>Trip Name</label>
+              <input type="text" placeholder="e.g. European Summer Adventure 2025">
+            </div>
+            <div class="input-row">
+              <div class="field">
+                <label>Start Date</label>
+                <input type="date" value="2025-06-10">
+              </div>
+              <div class="field">
+                <label>End Date</label>
+                <input type="date" value="2025-06-28">
+              </div>
+            </div>
+            <div class="field">
+              <label>Trip Description</label>
+              <textarea placeholder="Describe your trip goals, vibe, or what you're excited about…"></textarea>
+            </div>
+            <div class="input-row">
+              <div class="field">
+                <label>Total Budget (USD)</label>
+                <input type="number" placeholder="e.g. 4000">
+              </div>
+              <div class="field">
+                <label>Number of Travellers</label>
+                <input type="number" placeholder="1" value="1" min="1">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trip Type -->
+        <div class="form-section">
+          <h3>Trip Type</h3>
+          <div class="desc">Select what best describes your travel style</div>
+          <div class="trip-type-btns">
+            <button class="type-btn active">🏖️ Beach & Relaxation</button>
+            <button class="type-btn">🏔️ Adventure</button>
+            <button class="type-btn">🏛️ Culture & History</button>
+            <button class="type-btn">🍜 Food & Cuisine</button>
+            <button class="type-btn">🌿 Nature</button>
+            <button class="type-btn">🏙️ City Break</button>
+            <button class="type-btn">💒 Honeymoon</button>
+            <button class="type-btn">👨‍👩‍👧 Family</button>
+          </div>
+        </div>
+
+        <!-- Suggested Places -->
+        <div class="form-section">
+          <h3>Suggested Destinations</h3>
+          <div class="desc">Select places you'd like to visit — you can add more later</div>
+          <div class="suggestions-grid">
+            <div class="dest-card sug-card selected" style="aspect-ratio:unset;height:100px;position:relative;">
+              <div class="sug-bg bg-1">🗼</div>
+              <div class="sug-overlay"></div>
+              <div class="sug-info"><div class="name">Paris</div><div class="country">France</div></div>
+              <div class="check">✓</div>
+            </div>
+            <div class="dest-card sug-card" style="aspect-ratio:unset;height:100px;position:relative;">
+              <div class="sug-bg bg-2">⛩️</div>
+              <div class="sug-overlay"></div>
+              <div class="sug-info"><div class="name">Tokyo</div><div class="country">Japan</div></div>
+              <div class="check">✓</div>
+            </div>
+            <div class="dest-card sug-card" style="aspect-ratio:unset;height:100px;position:relative;">
+              <div class="sug-bg bg-3">🏖️</div>
+              <div class="sug-overlay"></div>
+              <div class="sug-info"><div class="name">Bali</div><div class="country">Indonesia</div></div>
+              <div class="check">✓</div>
+            </div>
+            <div class="dest-card sug-card" style="aspect-ratio:unset;height:100px;position:relative;">
+              <div class="sug-bg bg-4">🏛️</div>
+              <div class="sug-overlay"></div>
+              <div class="sug-info"><div class="name">Rome</div><div class="country">Italy</div></div>
+              <div class="check">✓</div>
+            </div>
+            <div class="dest-card sug-card" style="aspect-ratio:unset;height:100px;position:relative;">
+              <div class="sug-bg" style="background:linear-gradient(135deg,#fd746c,#ff9068);">🏔️</div>
+              <div class="sug-overlay"></div>
+              <div class="sug-info"><div class="name">Santorini</div><div class="country">Greece</div></div>
+              <div class="check">✓</div>
+            </div>
+            <div class="dest-card sug-card" style="aspect-ratio:unset;height:100px;position:relative;">
+              <div class="sug-bg" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">🕌</div>
+              <div class="sug-overlay"></div>
+              <div class="sug-info"><div class="name">Istanbul</div><div class="country">Turkey</div></div>
+              <div class="check">✓</div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" style="margin-top:16px;width:100%;border:1.5px dashed var(--border);justify-content:center;">🔍 Search more destinations</button>
+        </div>
+
+        <div style="display:flex;gap:12px;">
+          <button class="btn btn-outline" onclick="location.href='03-dashboard.html'">← Cancel</button>
+          <button class="btn btn-primary btn-lg" style="flex:1;justify-content:center;" onclick="location.href='05-itinerary-builder.html'">Save & Build Itinerary →</button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar-panel">
+        <div class="summary-card">
+          <div class="summary-head">
+            <h4>Trip Summary</h4>
+            <p>Automatically updates as you fill in details</p>
+          </div>
+          <div class="summary-body">
+            <div class="summary-row"><span class="label">Trip Name</span><span class="val">–</span></div>
+            <div class="summary-row"><span class="label">Duration</span><span class="val">18 days</span></div>
+            <div class="summary-row"><span class="label">Destinations</span><span class="val">1 selected</span></div>
+            <div class="summary-row"><span class="label">Travellers</span><span class="val">1 person</span></div>
+            <div class="divider"></div>
+            <div class="summary-row"><span class="label">Budget</span><span class="val">$4,000</span></div>
+            <div style="font-size:0.78rem;color:var(--text-light);margin-top:-4px;">≈ $222/day per person</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+            <div style="font-size:0.75rem;color:var(--text-light);">Profile completion: 30%</div>
+          </div>
+        </div>
+
+        <div class="ai-tip">
+          <div class="ai-badge">✨ AI Suggestion</div>
+          <p>Based on your travel style and budget, a 10-day Europe trip in June would cost approximately <strong style="color:var(--amber-light);">$2,800–$3,400</strong>.</p>
+          <div class="tip-cta">
+            <div class="tip-chip">🏨 Hotels</div>
+            <div class="tip-chip">🍽️ Dining</div>
+            <div class="tip-chip">🚂 Transport</div>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <h4 style="font-weight:600;color:var(--navy);font-size:0.9rem;margin-bottom:12px;">📋 Checklist</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;">
+              <span style="color:var(--teal);">✅</span><span style="color:var(--text-mid);">Trip name set</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;">
+              <span style="color:var(--teal);">✅</span><span style="color:var(--text-mid);">Dates selected</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;">
+              <span style="color:var(--border);font-size:0.9rem;">○</span><span style="color:var(--text-light);">Add destination</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;">
+              <span style="color:var(--border);font-size:0.9rem;">○</span><span style="color:var(--text-light);">Set budget</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;">
+              <span style="color:var(--border);font-size:0.9rem;">○</span><span style="color:var(--text-light);">Build itinerary</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.sug-card').forEach(c => c.addEventListener('click', () => c.classList.toggle('selected')));
+document.querySelectorAll('.type-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.type-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
+</script>
+</body>
+</html>

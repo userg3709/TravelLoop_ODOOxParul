@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop – Profile</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.profile-layout { display: grid; grid-template-columns: 320px 1fr; gap: 32px; }
+.profile-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; position: sticky; top: calc(var(--nav-h) + 24px); }
+.profile-card-top { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); padding: 40px 28px 24px; text-align: center; position: relative; }
+.profile-avatar { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, var(--amber), var(--coral)); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 16px; border: 4px solid rgba(255,255,255,0.3); cursor: pointer; position: relative; transition: all 0.2s; }
+.profile-avatar:hover { transform: scale(1.05); }
+.profile-avatar .cam-overlay { position: absolute; inset: 0; border-radius: 50%; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; font-size: 1.25rem; }
+.profile-avatar:hover .cam-overlay { display: flex; }
+.profile-name { font-family: var(--font-display); font-size: 1.25rem; color: white; font-weight: 600; }
+.profile-handle { color: rgba(255,255,255,0.55); font-size: 0.82rem; margin-top: 2px; }
+.profile-location { color: rgba(255,255,255,0.65); font-size: 0.82rem; margin-top: 8px; }
+.profile-badges { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+.profile-badge-chip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: rgba(255,255,255,0.8); }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); }
+.profile-stat { padding: 16px 8px; text-align: center; border-right: 1px solid var(--border); }
+.profile-stat:last-child { border-right: none; }
+.profile-stat .num { font-family: var(--font-display); font-size: 1.25rem; color: var(--navy); font-weight: 700; }
+.profile-stat .lbl { font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.04em; }
+.profile-links { padding: 16px; display: flex; flex-direction: column; gap: 2px; }
+.profile-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); color: var(--text-mid); font-size: 0.875rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+.profile-link:hover, .profile-link.active { background: var(--sand-light); color: var(--navy); }
+.profile-link .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+.main-content { display: flex; flex-direction: column; gap: 24px; }
+.settings-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; }
+.settings-card-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.settings-card-head h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--navy); }
+.settings-card-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+.trips-thumb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.thumb-card { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 4/3; position: relative; cursor: pointer; transition: all 0.2s; }
+.thumb-card:hover { transform: scale(1.03); }
+.thumb-card .bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+.thumb-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,31,61,0.85) 0%, transparent 60%); }
+.thumb-card .label { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 10px; }
+.thumb-card .label .city { font-size: 0.78rem; font-weight: 600; color: white; }
+.thumb-card .label .date { font-size: 0.68rem; color: rgba(255,255,255,0.7); }
+
+.danger-zone { background: #fff5f5; border: 1px solid #fed7d7; border-radius: var(--radius-md); padding: 24px; }
+.danger-zone h4 { color: #c53030; font-weight: 600; margin-bottom: 8px; }
+.danger-zone p { font-size: 0.85rem; color: #744210; line-height: 1.6; margin-bottom: 16px; }
+
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info h5 { font-weight: 500; font-size: 0.9rem; color: var(--navy); }
+.toggle-info p { font-size: 0.78rem; color: var(--text-light); margin-top: 2px; }
+.toggle { width: 44px; height: 24px; border-radius: 12px; background: var(--border); position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; border: none; }
+.toggle.on { background: var(--teal); }
+.toggle::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.toggle.on::after { transform: translateX(20px); }
+
+@media (max-width: 900px) { .profile-layout { grid-template-columns: 1fr; } .profile-card { position: static; } .trips-thumb-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <div class="nav-links">
+    <a href="03-dashboard.html">Home</a>
+    <a href="06-my-trips.html">My Trips</a>
+    <a href="04-create-trip.html">Plan Trip</a>
+    <a href="10-community.html">Community</a>
+  </div>
+  <div class="nav-avatar">AM</div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-hero">
+    <div class="content">
+      <h1>👤 My Profile</h1>
+      <p>Manage your account, preferences and travel history</p>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="profile-layout">
+      <!-- Profile Sidebar -->
+      <div>
+        <div class="profile-card">
+          <div class="profile-card-top">
+            <div class="profile-avatar">
+              AM
+              <div class="cam-overlay">📷</div>
+            </div>
+            <div class="profile-name">Alex Morgan</div>
+            <div class="profile-handle">@alexmorgan</div>
+            <div class="profile-location">📍 New York, United States</div>
+            <div class="profile-badges">
+              <div class="profile-badge-chip">🌍 Explorer</div>
+              <div class="profile-badge-chip">✈️ 5 Trips</div>
+              <div class="profile-badge-chip">🌟 Member since 2023</div>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="num">5</div><div class="lbl">Trips</div></div>
+            <div class="profile-stat"><div class="num">12</div><div class="lbl">Cities</div></div>
+            <div class="profile-stat"><div class="num">47</div><div class="lbl">Days</div></div>
+          </div>
+          <div class="profile-links">
+            <a href="#" class="profile-link active"><span class="icon">👤</span> Personal Info</a>
+            <a href="#" class="profile-link"><span class="icon">🔒</span> Privacy & Security</a>
+            <a href="#" class="profile-link"><span class="icon">🔔</span> Notifications</a>
+            <a href="#" class="profile-link"><span class="icon">🌍</span> Language & Region</a>
+            <a href="#" class="profile-link"><span class="icon">⭐</span> Saved Destinations</a>
+            <a href="01-login.html" class="profile-link" style="color:var(--coral);"><span class="icon">🚪</span> Sign Out</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Settings -->
+      <div class="main-content">
+        <!-- Personal Info -->
+        <div class="settings-card">
+          <div class="settings-card-head">
+            <h3>Personal Information</h3>
+            <button class="btn btn-outline btn-sm">✏️ Edit</button>
+          </div>
+          <div class="settings-card-body">
+            <div class="input-row">
+              <div class="field"><label>First Name</label><input type="text" value="Alex"></div>
+              <div class="field"><label>Last Name</label><input type="text" value="Morgan"></div>
+            </div>
+            <div class="input-row">
+              <div class="field"><label>Email Address</label><input type="email" value="alex@email.com"></div>
+              <div class="field"><label>Phone Number</label><input type="tel" value="+1 (555) 234-5678"></div>
+            </div>
+            <div class="input-row">
+              <div class="field"><label>City</label><input type="text" value="New York"></div>
+              <div class="field"><label>Country</label><select><option>United States</option></select></div>
+            </div>
+            <div class="field"><label>Bio</label><textarea>Adventure seeker and food lover. Currently exploring Southeast Asia and documenting every bite and sunset along the way.</textarea></div>
+            <button class="btn btn-primary" style="width:fit-content;">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Preplanned Trips -->
+        <div class="settings-card">
+          <div class="settings-card-head">
+            <h3>🗓️ Preplanned Trips</h3>
+            <a href="06-my-trips.html" style="color:var(--amber);font-size:0.85rem;text-decoration:none;font-weight:500;">View all</a>
+          </div>
+          <div class="settings-card-body">
+            <div class="trips-thumb-grid">
+              <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#4facfe,#00c9ff);">🌏</div><div class="overlay"></div><div class="label"><div class="city">SE Asia Loop</div><div class="date">Jun 10–28</div></div></div>
+              <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">🏔️</div><div class="overlay"></div><div class="label"><div class="city">Swiss Alps</div><div class="date">Aug 3–10</div></div></div>
+              <div class="thumb-card" style="background:var(--sand-light);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border);" onclick="location.href='04-create-trip.html'">
+                <div style="text-align:center;color:var(--text-light);">
+                  <div style="font-size:1.5rem;">+</div>
+                  <div style="font-size:0.72rem;margin-top:4px;">New Trip</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Previous Trips -->
+        <div class="settings-card">
+          <div class="settings-card-head">
+            <h3>✈️ Previous Trips</h3>
+            <a href="06-my-trips.html" style="color:var(--amber);font-size:0.85rem;text-decoration:none;font-weight:500;">View all</a>
+          </div>
+          <div class="settings-card-body">
+            <div class="trips-thumb-grid">
+              <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#667eea,#764ba2);">🗼</div><div class="overlay"></div><div class="label"><div class="city">Paris & Amsterdam</div><div class="date">Mar 2025</div></div></div>
+              <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#f093fb,#f5576c);">🗽</div><div class="overlay"></div><div class="label"><div class="city">East Coast</div><div class="date">Jan 2025</div></div></div>
+              <div class="thumb-card"><div class="bg" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">🏖️</div><div class="overlay"></div><div class="label"><div class="city">Bali Retreat</div><div class="date">Nov 2024</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification Preferences -->
+        <div class="settings-card">
+          <div class="settings-card-head"><h3>🔔 Notification Preferences</h3></div>
+          <div class="settings-card-body">
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>Trip Reminders</h5><p>Get notified before your trips start</p></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>Price Alerts</h5><p>Flight and hotel price drop notifications</p></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>Community Updates</h5><p>New trip plans from people you follow</p></div>
+              <button class="toggle" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>Marketing Emails</h5><p>Travel deals and destination inspiration</p></div>
+              <button class="toggle" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+          <h4>⚠️ Danger Zone</h4>
+          <p>Once you delete your account, all your trips, itineraries and data will be permanently removed. This action cannot be undone.</p>
+          <button class="btn btn-danger btn-sm">🗑 Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

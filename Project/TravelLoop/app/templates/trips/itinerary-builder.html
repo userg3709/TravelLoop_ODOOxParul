@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop – Build Itinerary</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.builder-layout { display: grid; grid-template-columns: 1fr 360px; gap: 28px; }
+.section-block { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; transition: box-shadow 0.2s; }
+.section-block:hover { box-shadow: var(--shadow-md); }
+.section-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: var(--sand-light); }
+.section-num { width: 32px; height: 32px; border-radius: 50%; background: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+.section-header-info { flex: 1; }
+.section-header-info h4 { font-weight: 600; font-size: 0.95rem; color: var(--navy); }
+.section-header-info p { font-size: 0.8rem; color: var(--text-light); margin-top: 1px; }
+.section-actions { display: flex; gap: 8px; }
+.section-body { padding: 20px; }
+.section-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+.meta-chip { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 0.82rem; color: var(--text-mid); background: white; cursor: pointer; transition: all 0.2s; }
+.meta-chip:hover { border-color: var(--amber); color: var(--amber); }
+.meta-chip.set { background: #fef3c7; border-color: var(--amber); color: #92400e; }
+.section-desc { margin-top: 12px; color: var(--text-mid); font-size: 0.875rem; line-height: 1.6; padding: 12px; background: var(--sand-light); border-radius: 8px; }
+
+.activity-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.activity-row:last-child { border-bottom: none; }
+.activity-drag { color: var(--text-light); cursor: grab; font-size: 0.85rem; }
+.activity-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.activity-info { flex: 1; }
+.activity-info .name { font-size: 0.875rem; font-weight: 500; color: var(--navy); }
+.activity-info .meta { font-size: 0.75rem; color: var(--text-light); }
+.activity-cost { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-mid); }
+.activity-del { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 0.9rem; padding: 4px; border-radius: 4px; }
+.activity-del:hover { color: var(--coral); background: #fee2e2; }
+
+.add-section-btn { background: white; border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; cursor: pointer; transition: all 0.25s; color: var(--text-light); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.add-section-btn:hover { border-color: var(--amber); color: var(--amber); background: #fef9f0; }
+
+.sidebar-sticky { position: sticky; top: calc(var(--nav-h) + 24px); display: flex; flex-direction: column; gap: 16px; }
+.budget-overview { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; }
+.budget-overview h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 16px; }
+.budget-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.budget-total .amount { font-family: var(--font-display); font-size: 1.75rem; color: var(--navy); font-weight: 700; }
+.budget-total .limit { font-size: 0.8rem; color: var(--text-light); }
+.budget-bar { height: 10px; border-radius: 5px; background: var(--sand-light); margin-bottom: 12px; overflow: hidden; }
+.budget-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--teal), var(--teal-light)); }
+.budget-cats { display: flex; flex-direction: column; gap: 8px; }
+.budget-cat { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
+.budget-cat .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.budget-cat .name { flex: 1; color: var(--text-mid); }
+.budget-cat .amt { color: var(--navy); font-weight: 600; font-family: var(--font-mono); font-size: 0.78rem; }
+
+.timeline-mini { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; }
+.timeline-mini h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 14px; }
+.timeline-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+.timeline-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 5px; }
+.timeline-line { width: 2px; background: var(--border); flex: 1; min-height: 20px; margin-top: 4px; }
+.timeline-item:last-child .timeline-line { display: none; }
+.timeline-info .city { font-weight: 600; font-size: 0.85rem; color: var(--navy); }
+.timeline-info .dates { font-size: 0.75rem; color: var(--text-light); }
+
+@media (max-width: 900px) { .builder-layout { grid-template-columns: 1fr; } .sidebar-sticky { position: static; } }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="03-dashboard.html" class="nav-logo">Travel<span>oop</span></a>
+  <div class="nav-links">
+    <a href="03-dashboard.html">Home</a>
+    <a href="06-my-trips.html">My Trips</a>
+    <a href="04-create-trip.html" class="active">Plan Trip</a>
+    <a href="10-community.html">Community</a>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button class="btn btn-outline btn-sm">👁 Preview</button>
+    <button class="btn btn-primary btn-sm" onclick="location.href='09-itinerary-view.html'">Save & View →</button>
+    <div class="nav-avatar nav-links"><a href="07-user-profile.html">AM</a></div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-hero">
+    <div class="content">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <a href="04-create-trip.html" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">← Create Trip</a>
+        <span style="color:rgba(255,255,255,0.3);">/</span>
+        <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Itinerary Builder</span>
+      </div>
+      <h1>🗺️ Build Itinerary</h1>
+      <p>Southeast Asia Loop · Jun 10 – Jun 28, 2025 · 18 days</p>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="builder-layout">
+      <!-- Builder Sections -->
+      <div>
+        <!-- Section 1 -->
+        <div class="section-block fade-up">
+          <div class="section-header">
+            <div class="section-num">1</div>
+            <div class="section-header-info">
+              <h4>Bangkok, Thailand</h4>
+              <p>Day 1–4 · Grand Palace, street food, temples</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-ghost btn-sm">⇅ Reorder</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--coral);">🗑</button>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="section-desc">
+              All the necessary information about this stop. This can include hotel check-in details, local transport tips, or area highlights. Use notes for specific day reminders.
+            </div>
+            <div class="section-meta" style="margin-top:14px;margin-bottom:14px;">
+              <div class="meta-chip set">📅 Jun 10 – Jun 14</div>
+              <div class="meta-chip set">💵 Budget: $450</div>
+              <div class="meta-chip">🏨 Add Hotel</div>
+              <div class="meta-chip">✈️ Add Flight</div>
+            </div>
+            <div class="activity-row">
+              <span class="activity-drag">⠿</span>
+              <div class="activity-icon" style="background:#fef3c7;">🏛️</div>
+              <div class="activity-info"><div class="name">Grand Palace & Wat Pho</div><div class="meta">⏱ 3h · Cultural · Morning</div></div>
+              <div class="activity-cost">$25</div>
+              <button class="activity-del">✕</button>
+            </div>
+            <div class="activity-row">
+              <span class="activity-drag">⠿</span>
+              <div class="activity-icon" style="background:#d1fae5;">🍜</div>
+              <div class="activity-info"><div class="name">Chatuchak Weekend Market</div><div class="meta">⏱ 4h · Food & Shopping · Afternoon</div></div>
+              <div class="activity-cost">$40</div>
+              <button class="activity-del">✕</button>
+            </div>
+            <div class="activity-row">
+              <span class="activity-drag">⠿</span>
+              <div class="activity-icon" style="background:#ede9fe;">🛶</div>
+              <div class="activity-info"><div class="name">Chao Phraya River Cruise</div><div class="meta">⏱ 2h · Sightseeing · Evening</div></div>
+              <div class="activity-cost">$30</div>
+              <button class="activity-del">✕</button>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px;color:var(--amber);border:1.5px dashed rgba(212,136,42,0.4);width:100%;justify-content:center;">+ Add Activity</button>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section-block fade-up" style="animation-delay:0.1s;">
+          <div class="section-header">
+            <div class="section-num">2</div>
+            <div class="section-header-info">
+              <h4>Chiang Mai, Thailand</h4>
+              <p>Day 5–8 · Elephant sanctuary, night bazaar, cooking class</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-ghost btn-sm">⇅ Reorder</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--coral);">🗑</button>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="section-meta" style="margin-bottom:14px;">
+              <div class="meta-chip set">📅 Jun 14 – Jun 18</div>
+              <div class="meta-chip set">💵 Budget: $380</div>
+              <div class="meta-chip">🏨 Add Hotel</div>
+            </div>
+            <div class="activity-row">
+              <span class="activity-drag">⠿</span>
+              <div class="activity-icon" style="background:#fce7f3;">🐘</div>
+              <div class="activity-info"><div class="name">Elephant Nature Park</div><div class="meta">⏱ Full day · Wildlife · Morning</div></div>
+              <div class="activity-cost">$75</div>
+              <button class="activity-del">✕</button>
+            </div>
+            <div class="activity-row">
+              <span class="activity-drag">⠿</span>
+              <div class="activity-icon" style="background:#fef3c7;">👩‍🍳</div>
+              <div class="activity-info"><div class="name">Thai Cooking Class</div><div class="meta">⏱ 4h · Food & Culture</div></div>
+              <div class="activity-cost">$35</div>
+              <button class="activity-del">✕</button>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px;color:var(--amber);border:1.5px dashed rgba(212,136,42,0.4);width:100%;justify-content:center;">+ Add Activity</button>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section-block fade-up" style="animation-delay:0.2s;">
+          <div class="section-header">
+            <div class="section-num">3</div>
+            <div class="section-header-info">
+              <h4>Bali, Indonesia</h4>
+              <p>Day 9–18 · Temples, rice terraces, beach clubs</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-ghost btn-sm">⇅ Reorder</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--coral);">🗑</button>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="section-meta" style="margin-bottom:14px;">
+              <div class="meta-chip set">📅 Jun 18 – Jun 28</div>
+              <div class="meta-chip set">💵 Budget: $820</div>
+              <div class="meta-chip">🏨 Add Hotel</div>
+            </div>
+            <div class="activity-row">
+              <span class="activity-drag">⠿</span>
+              <div class="activity-icon" style="background:#d1fae5;">🌾</div>
+              <div class="activity-info"><div class="name">Tegallalang Rice Terraces</div><div class="meta">⏱ 3h · Nature · Morning</div></div>
+              <div class="activity-cost">$15</div>
+              <button class="activity-del">✕</button>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px;color:var(--amber);border:1.5px dashed rgba(212,136,42,0.4);width:100%;justify-content:center;">+ Add Activity</button>
+          </div>
+        </div>
+
+        <div class="add-section-btn" onclick="void(0)">
+          + Add Another Stop
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar-sticky">
+        <div class="budget-overview">
+          <h4>💰 Budget Overview</h4>
+          <div class="budget-total">
+            <div>
+              <div class="amount">$1,650</div>
+              <div class="limit">of $4,000 budget</div>
+            </div>
+            <span class="badge badge-teal">41% used</span>
+          </div>
+          <div class="budget-bar"><div class="budget-bar-fill" style="width:41%;"></div></div>
+          <div class="budget-cats">
+            <div class="budget-cat"><div class="dot" style="background:var(--teal);"></div><span class="name">Activities</span><span class="amt">$220</span></div>
+            <div class="budget-cat"><div class="dot" style="background:var(--amber);"></div><span class="name">Accommodation</span><span class="amt">$850</span></div>
+            <div class="budget-cat"><div class="dot" style="background:var(--coral);"></div><span class="name">Transport</span><span class="amt">$410</span></div>
+            <div class="budget-cat"><div class="dot" style="background:#a78bfa;"></div><span class="name">Food</span><span class="amt">$170</span></div>
+          </div>
+        </div>
+
+        <div class="timeline-mini">
+          <h4>📍 Route Overview</h4>
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+            <div class="timeline-info"><div class="city">Bangkok, Thailand</div><div class="dates">Jun 10 – Jun 14</div></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+            <div class="timeline-info"><div class="city">Chiang Mai, Thailand</div><div class="dates">Jun 14 – Jun 18</div></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-wrap"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+            <div class="timeline-info"><div class="city">Bali, Indonesia</div><div class="dates">Jun 18 – Jun 28</div></div>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <h4 style="font-weight:600;font-size:0.9rem;color:var(--navy);margin-bottom:12px;">⚡ Quick Actions</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="08-activity-search.html" class="btn btn-outline btn-sm" style="justify-content:center;">🔍 Search Activities</a>
+            <a href="11-packing.html" class="btn btn-outline btn-sm" style="justify-content:center;">🧳 Packing Checklist</a>
+            <a href="13-trip-notes.html" class="btn btn-outline btn-sm" style="justify-content:center;">📝 Trip Notes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
