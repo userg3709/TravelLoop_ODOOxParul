@@ -1,12 +1,8 @@
+from flask import Blueprint, render_template,redirect,url_for,request
+from flask_login import current_user
 from datetime import datetime
 from uuid import uuid4
-
-from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import current_user
-
-from app.db import db
-from app.models import ItineraryItem, Region, Trip, User
-
+from app.models import *
 
 main = Blueprint("main", __name__)
 
