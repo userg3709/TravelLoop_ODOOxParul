@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop – Register</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+body { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6a 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+.reg-card { background: var(--cream); border-radius: var(--radius-xl); padding: 48px; max-width: 600px; width: 100%; box-shadow: var(--shadow-lg); animation: fadeUp 0.5s ease; }
+.reg-header { text-align: center; margin-bottom: 36px; }
+.logo { font-family: var(--font-display); font-size: 1.75rem; color: var(--navy); font-weight: 700; text-decoration: none; }
+.logo span { color: var(--amber); }
+.reg-header h2 { font-family: var(--font-display); font-size: 1.75rem; color: var(--navy); margin-top: 16px; }
+.reg-header p { color: var(--text-light); font-size: 0.875rem; margin-top: 4px; }
+.avatar-zone { display: flex; flex-direction: column; align-items: center; margin-bottom: 28px; }
+.avatar-circle { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg, var(--sand), #e8d5b0); border: 3px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; font-size: 1.75rem; position: relative; }
+.avatar-circle:hover { border-color: var(--amber); box-shadow: 0 0 0 6px rgba(212,136,42,0.12); }
+.avatar-circle .cam { position: absolute; bottom: 2px; right: 2px; background: var(--amber); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: white; }
+.avatar-zone span { font-size: 0.78rem; color: var(--text-light); margin-top: 8px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-full { grid-column: 1 / -1; }
+.form-stack { display: flex; flex-direction: column; gap: 14px; }
+.step-indicator { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; justify-content: center; }
+.step { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
+.step.active { background: var(--amber); color: white; }
+.step.done { background: var(--teal); color: white; }
+.step.pending { background: var(--border); color: var(--text-light); }
+.step-line { flex: 1; height: 2px; background: var(--border); max-width: 40px; }
+.step-line.done { background: var(--teal); }
+.terms { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: var(--text-mid); }
+.terms input[type=checkbox] { margin-top: 2px; accent-color: var(--amber); flex-shrink: 0; }
+.terms a { color: var(--amber); text-decoration: none; }
+.login-link { text-align: center; font-size: 0.85rem; color: var(--text-light); margin-top: 8px; }
+.login-link a { color: var(--amber); font-weight: 600; text-decoration: none; }
+@media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .reg-card { padding: 32px 20px; } }
+</style>
+</head>
+<body>
+<div class="reg-card">
+  <div class="reg-header">
+    <a href="01-login.html" class="logo">Travel<span>oop</span></a>
+    <h2>Create your account</h2>
+    <p>Start planning unforgettable journeys today</p>
+  </div>
+
+  <div class="step-indicator">
+    <div class="step active">1</div>
+    <div class="step-line"></div>
+    <div class="step pending">2</div>
+    <div class="step-line"></div>
+    <div class="step pending">3</div>
+  </div>
+
+  <div class="avatar-zone">
+    <div class="avatar-circle">
+      ✈️
+      <div class="cam">📷</div>
+    </div>
+    <span>Upload profile photo (optional)</span>
+  </div>
+
+  <div class="form-stack">
+    <div class="form-grid">
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" placeholder="Alex">
+      </div>
+      <div class="field">
+        <label>Last Name</label>
+        <input type="text" placeholder="Morgan">
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" placeholder="alex@email.com">
+      </div>
+      <div class="field">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+1 (555) 000-0000">
+      </div>
+      <div class="field">
+        <label>City</label>
+        <input type="text" placeholder="New York">
+      </div>
+      <div class="field">
+        <label>Country</label>
+        <select>
+          <option value="">Select country</option>
+          <option>United States</option>
+          <option>United Kingdom</option>
+          <option>Canada</option>
+          <option>Australia</option>
+          <option>India</option>
+          <option>Germany</option>
+          <option>France</option>
+          <option>Japan</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1;">
+        <label>Password</label>
+        <input type="password" placeholder="Create a strong password">
+      </div>
+      <div class="field form-full">
+        <label>Additional Information <span style="color:var(--text-light);font-weight:400;text-transform:none;font-size:0.75rem;">(optional)</span></label>
+        <textarea placeholder="Tell us a bit about your travel style, interests, or dream destinations…"></textarea>
+      </div>
+    </div>
+
+    <div class="terms">
+      <input type="checkbox" id="terms">
+      <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. Traveloop may send me travel inspiration and updates.</label>
+    </div>
+
+    <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Create Account →</button>
+    <div class="login-link">Already have an account? <a href="01-login.html">Sign in</a></div>
+  </div>
+</div>
+</body>
+</html>
