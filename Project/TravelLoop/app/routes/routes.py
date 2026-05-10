@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from uuid import uuid4
 
 from flask import Blueprint, redirect, render_template, request, url_for
@@ -6,6 +6,7 @@ from flask_login import current_user
 
 from app.db import db
 from app.models import ItineraryItem, Region, Trip, User
+from app.seed_data import add_dummy_data
 
 
 main = Blueprint("main", __name__)
@@ -87,10 +88,27 @@ def _trip_budget(trip):
     return total
 
 
+def _complete_past_trips(user):
+    if not user:
+        return
+
+    updated = False
+    today = date.today()
+    trips = Trip.query.filter_by(user_id=user.id).filter(Trip.status != "completed").all()
+    for trip in trips:
+        if trip.end_date and trip.end_date < today:
+            trip.status = "completed"
+            updated = True
+
+    if updated:
+        db.session.commit()
+
+
 def _trips_for(user):
     if not user:
         return []
 
+    _complete_past_trips(user)
     return (
         Trip.query.filter_by(user_id=user.id)
         .order_by(Trip.created_at.desc())
@@ -179,6 +197,39 @@ def _travel_readiness(upcoming_trips):
         "summary": route,
         "checks": ["Confirm stays", "Check local transport", "Review activity bookings", "Share itinerary"],
     }
+
+
+def _active_planning_trips(user):
+    trips = _trips_for(user)
+    return [trip for trip in trips if trip.status in {"planned", "draft", "upcoming", "ongoing"}]
+
+
+def _destination_from_location(location):
+    parts = [part.strip() for part in location.split(",") if part.strip()]
+    if not parts:
+        return "Activity Stop", "India"
+
+    city = parts[-1] if len(parts) == 2 else parts[0]
+    country = parts[-1] if len(parts) > 2 else "India"
+    return city, country
+
+
+def _activity_region(trip, location):
+    city, country = _destination_from_location(location)
+    for region in trip.regions:
+        region_name = (region.city or region.name or "").strip().lower()
+        if region_name and region_name == city.lower():
+            return region
+
+    region = Region(
+        trip_id=trip.id,
+        name=city,
+        city=city,
+        country=country,
+    )
+    db.session.add(region)
+    db.session.flush()
+    return region
 
 
 @main.app_template_filter("trip_days")
@@ -278,6 +329,25 @@ def mytrips():
     )
 
 
+@main.route("/trips/<int:trip_id>/status", methods=["POST"])
+def update_trip_status(trip_id):
+    user = _active_user()
+    query = Trip.query.filter_by(id=trip_id)
+    if user:
+        query = query.filter_by(user_id=user.id)
+    trip = query.first()
+    if not trip:
+        return redirect(url_for("main.mytrips"))
+
+    status = request.form.get("status", "").strip().lower()
+    if status in {"planned", "upcoming", "ongoing", "completed"}:
+        trip.status = "planned" if status == "upcoming" else status
+        db.session.commit()
+
+    next_page = request.form.get("next") or url_for("main.mytrips")
+    return redirect(next_page)
+
+
 @main.route("/createtrip", methods=["GET", "POST"])
 @main.route("/create-trip", methods=["GET", "POST"])
 @main.route("/04-create-trip.html", methods=["GET", "POST"])
@@ -324,6 +394,7 @@ def createtrip():
 @main.route("/activities")
 @main.route("/08-activity-search.html")
 def activities():
+    user = _active_user()
     query = request.args.get("q", "India heritage and nature experiences")
     query_text = query.lower()
     catalog = [
@@ -335,7 +406,62 @@ def activities():
     ]
     if not catalog:
         catalog = ACTIVITY_CATALOG
-    return render_template("trips/activity-search.html", query=query, activities=catalog, initials=_initials(_active_user()))
+    return render_template(
+        "trips/activity-search.html",
+        query=query,
+        activities=catalog,
+        active_trips=_active_planning_trips(user),
+        initials=_initials(user),
+    )
+
+
+@main.route("/activities/add", methods=["POST"])
+def add_activity_to_trip():
+    user = _active_user()
+    if not user:
+        return redirect(url_for("auth.login"))
+
+    title = request.form.get("title", "").strip()
+    location = request.form.get("location", "").strip()
+    category = request.form.get("category", "").strip()
+    duration = request.form.get("duration", "").strip()
+    price = request.form.get("price", "").strip()
+    currency = request.form.get("currency", "INR").strip() or "INR"
+    trip_choice = request.form.get("trip_id", "").strip()
+
+    if trip_choice == "new":
+        trip = Trip(
+            trip_code=f"TRIP-{uuid4().hex[:8].upper()}",
+            user_id=user.id,
+            trip_name=f"{title or 'Activity'} Trip",
+            description=f"Created from activity search for {location or 'a selected activity'}.",
+            status="planned",
+        )
+        db.session.add(trip)
+        db.session.flush()
+    else:
+        trip = (
+            Trip.query.filter_by(id=trip_choice, user_id=user.id)
+            .filter(Trip.status.in_(["planned", "draft", "upcoming", "ongoing"]))
+            .first()
+        )
+        if not trip:
+            return redirect(url_for("main.activities"))
+
+    region = _activity_region(trip, location)
+    description_parts = [part for part in [location, category, duration] if part]
+    db.session.add(
+        ItineraryItem(
+            trip_id=trip.id,
+            region_id=region.id,
+            title=title or "Selected activity",
+            description=" | ".join(description_parts),
+            budget_amount=_amount(price),
+            currency=currency,
+        )
+    )
+    db.session.commit()
+    return redirect(url_for("main.itinerary_builder", trip_id=trip.id))
 
 
 @main.route("/itinerary-builder")
@@ -505,3 +631,11 @@ def show_users():
     ]
 
     return "<br>".join(lines) if lines else "No users found"
+
+
+@main.route("/add-dummy-data")
+@main.route("/dev/add-dummy-data")
+def add_dummy_data_route():
+    user = _active_user()
+    trip = add_dummy_data(user)
+    return redirect(url_for("main.itinerary_builder", trip_id=trip.id))
