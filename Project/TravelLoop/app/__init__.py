@@ -7,12 +7,13 @@ from app.auth import auth_bp
 from app.db import db
 from app.models import *
 from app.routes.routes import main
+from app.seed_data import ensure_seed_data
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = "your-secret-key"
+    SECRET_KEY = os.environ.get("SECRET_KEY", "travelloop-local-dev-key")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(BASE_DIR, "..", "instance", "travelloop.sqlite")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -34,6 +35,7 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        ensure_seed_data()
 
     app.register_blueprint(main)
     app.register_blueprint(auth_bp)

@@ -1,56 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Traveloop – My Trips</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop - My Trips</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
+.stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-strip-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; text-align: center; }
+.stat-strip-card .num { font-family: var(--font-display); font-size: 2rem; color: var(--navy); font-weight: 700; }
+.stat-strip-card .lbl { font-size: 0.78rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
 .trips-toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 32px; flex-wrap: wrap; }
 .search-box { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px; background: white; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; }
 .search-box input { border: none; outline: none; font-family: var(--font-body); font-size: 0.9rem; color: var(--text-dark); background: transparent; flex: 1; }
 .filter-btn { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: white; font-family: var(--font-body); font-size: 0.875rem; font-weight: 500; cursor: pointer; color: var(--text-mid); transition: all 0.2s; }
 .filter-btn:hover, .filter-btn.active { border-color: var(--navy); color: var(--navy); }
-
 .trips-section { margin-bottom: 40px; }
 .trips-section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .trips-section-title h3 { font-family: var(--font-display); font-size: 1.25rem; color: var(--navy); }
 .trips-section-title .count { background: var(--navy); color: white; border-radius: 20px; padding: 2px 10px; font-size: 0.75rem; font-weight: 600; }
 .trips-section-title .line { flex: 1; height: 1px; background: var(--border); }
-
+.trips-grid { display: flex; flex-direction: column; gap: 14px; }
 .trip-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; transition: all 0.25s; cursor: pointer; display: flex; }
 .trip-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.trip-card-thumb { width: 140px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
-.trip-card-thumb .status-dot { position: absolute; top: 12px; right: 12px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; }
-.status-dot.ongoing { background: var(--teal); }
-.status-dot.upcoming { background: var(--amber); }
-.status-dot.completed { background: var(--text-light); }
+.trip-card-thumb { width: 140px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); color: white; font-size: 2rem; font-weight: 700; position: relative; }
 .trip-card-body { flex: 1; padding: 20px; min-width: 0; }
 .trip-card-body .trip-name { font-family: var(--font-display); font-size: 1.1rem; color: var(--navy); font-weight: 600; margin-bottom: 4px; }
 .trip-card-body .trip-route { color: var(--text-light); font-size: 0.82rem; margin-bottom: 12px; }
 .trip-card-meta { display: flex; gap: 16px; flex-wrap: wrap; }
-.trip-card-meta .meta-item { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-mid); }
-.trip-progress { margin-top: 12px; }
-.trip-progress-bar { height: 4px; background: var(--sand-light); border-radius: 2px; margin-top: 6px; }
-.trip-progress-fill { height: 100%; border-radius: 2px; }
+.trip-card-meta .meta-item { font-size: 0.8rem; color: var(--text-mid); }
 .trip-card-actions { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 20px 16px; border-left: 1px solid var(--border); flex-shrink: 0; }
 .trip-card-actions .action-btn { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--text-mid); font-family: var(--font-body); transition: all 0.2s; white-space: nowrap; }
-.trip-card-actions .action-btn:hover { border-color: var(--navy); color: var(--navy); }
 .trip-card-actions .action-btn.primary { background: var(--navy); color: white; border-color: var(--navy); }
-.trip-card-actions .action-btn.primary:hover { background: var(--navy-mid); }
-.trip-card-actions .action-btn.danger { color: var(--coral); }
-.trip-card-actions .action-btn.danger:hover { background: #fee2e2; border-color: var(--coral); }
-
-.trips-grid { display: flex; flex-direction: column; gap: 14px; }
-
-.empty-trips { text-align: center; padding: 48px 24px; background: white; border-radius: var(--radius-md); border: 2px dashed var(--border); }
-.empty-trips .emoji { font-size: 2.5rem; margin-bottom: 12px; }
-
-.stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-.stat-strip-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; text-align: center; }
-.stat-strip-card .num { font-family: var(--font-display); font-size: 2rem; color: var(--navy); font-weight: 700; }
-.stat-strip-card .lbl { font-size: 0.78rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
-.stat-strip-card .icon { font-size: 1.25rem; margin-bottom: 4px; }
-
+.empty-trips { text-align: center; padding: 48px 24px; background: white; border-radius: var(--radius-md); border: 2px dashed var(--border); color: var(--text-light); }
+.bg-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+.bg-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.bg-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.bg-4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
 @media (max-width: 700px) { .trip-card { flex-direction: column; } .trip-card-thumb { width: 100%; height: 100px; } .trip-card-actions { flex-direction: row; border-left: none; border-top: 1px solid var(--border); } .stats-strip { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
@@ -65,168 +51,70 @@
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <button class="btn btn-primary btn-sm" onclick="location.href='{{ url_for('main.createtrip') }}'">+ New Trip</button>
-    <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
+    <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">{{ initials }}</a></div>
   </div>
 </nav>
 
 <div class="page-wrap">
   <div class="page-hero">
     <div class="content">
-      <h1>🧳 My Trips</h1>
+      <h1>My Trips</h1>
       <p>All your adventures, past and future, in one place</p>
     </div>
   </div>
 
   <div class="content">
-    <!-- Stats Strip -->
     <div class="stats-strip">
-      <div class="stat-strip-card"><div class="icon">✈️</div><div class="num">5</div><div class="lbl">Total Trips</div></div>
-      <div class="stat-strip-card"><div class="icon">🌏</div><div class="num">12</div><div class="lbl">Cities</div></div>
-      <div class="stat-strip-card"><div class="icon">🗓️</div><div class="num">47</div><div class="lbl">Days Travelled</div></div>
-      <div class="stat-strip-card"><div class="icon">💰</div><div class="num">$8.4k</div><div class="lbl">Total Spent</div></div>
+      <div class="stat-strip-card"><div class="num">{{ stats.trips }}</div><div class="lbl">Total Trips</div></div>
+      <div class="stat-strip-card"><div class="num">{{ stats.cities }}</div><div class="lbl">Cities</div></div>
+      <div class="stat-strip-card"><div class="num">{{ stats.days }}</div><div class="lbl">Days Travelled</div></div>
+      <div class="stat-strip-card"><div class="num">${{ "%.0f"|format(stats.spent) }}</div><div class="lbl">Budget Items</div></div>
     </div>
 
-    <!-- Toolbar -->
     <div class="trips-toolbar">
       <div class="search-box">
-        <span style="color:var(--text-light);">🔍</span>
-        <input type="text" placeholder="Search trips, destinations…">
+        <span style="color:var(--text-light);">Search</span>
+        <input type="text" aria-label="Search trips, destinations">
       </div>
-      <button class="filter-btn">📅 Sort by Date ▾</button>
-      <button class="filter-btn">🗂 Group by Status ▾</button>
-      <button class="filter-btn active">☰ List View</button>
+      <button class="filter-btn active">List View</button>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('main.createtrip') }}">+ New Trip</a>
     </div>
 
-    <!-- Ongoing -->
+    {% set sections = [('ongoing', 'Ongoing'), ('upcoming', 'Upcoming'), ('completed', 'Completed')] %}
+    {% for key, label in sections %}
     <div class="trips-section">
       <div class="trips-section-title">
-        <div style="width:8px;height:8px;border-radius:50%;background:var(--teal);"></div>
-        <h3>Ongoing</h3>
-        <div class="count">1</div>
+        <h3>{{ label }}</h3>
+        <div class="count">{{ trip_groups[key]|length }}</div>
         <div class="line"></div>
       </div>
       <div class="trips-grid">
-        <div class="trip-card" onclick="location.href='{{ url_for('main.itinerary') }}'">
-          <div class="trip-card-thumb" style="background:linear-gradient(135deg,#4facfe,#00c9ff);">
-            🌏
-            <div class="status-dot ongoing"></div>
-          </div>
-          <div class="trip-card-body">
-            <div class="trip-name">Southeast Asia Loop</div>
-            <div class="trip-route">📍 Bangkok · Chiang Mai · Bali</div>
-            <div class="trip-card-meta">
-              <div class="meta-item">🗓️ Jun 10 – Jun 28, 2025</div>
-              <div class="meta-item">⏱ 18 days</div>
-              <div class="meta-item">💰 $4,000 budget</div>
-              <div class="meta-item">👤 Solo</div>
-            </div>
-            <div class="trip-progress">
-              <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-light);">
-                <span>Day 4 of 18</span><span>22% complete</span>
+        {% if trip_groups[key] %}
+          {% for trip in trip_groups[key] %}
+          <div class="trip-card" onclick="location.href='{{ url_for('main.itinerary', trip_id=trip.id) }}'">
+            <div class="trip-card-thumb bg-{{ (loop.index % 4) + 1 }}">{{ trip.trip_name[:2].upper() }}</div>
+            <div class="trip-card-body">
+              <div class="trip-name">{{ trip.trip_name }}</div>
+              <div class="trip-route">{{ trip|trip_route }}</div>
+              <div class="trip-card-meta">
+                <div class="meta-item">{{ trip|date_range }}</div>
+                <div class="meta-item">{{ trip|trip_days }} days</div>
+                <div class="meta-item">${{ "%.0f"|format(trip|trip_budget) }} budget items</div>
+                <div class="meta-item">{{ trip.status|title }}</div>
               </div>
-              <div class="trip-progress-bar"><div class="trip-progress-fill" style="width:22%;background:var(--teal);"></div></div>
+            </div>
+            <div class="trip-card-actions">
+              <button class="action-btn primary" onclick="event.stopPropagation();location.href='{{ url_for('main.itinerary', trip_id=trip.id) }}'">View</button>
+              <button class="action-btn" onclick="event.stopPropagation();location.href='{{ url_for('main.itinerary_builder', trip_id=trip.id) }}'">Edit</button>
             </div>
           </div>
-          <div class="trip-card-actions">
-            <button class="action-btn primary">View</button>
-            <button class="action-btn" onclick="event.stopPropagation();location.href='{{ url_for('main.itinerary_builder') }}'">Edit</button>
-            <button class="action-btn danger" onclick="event.stopPropagation();">Delete</button>
-          </div>
-        </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-trips">No {{ label|lower }} trips yet.</div>
+        {% endif %}
       </div>
     </div>
-
-    <!-- Upcoming -->
-    <div class="trips-section">
-      <div class="trips-section-title">
-        <div style="width:8px;height:8px;border-radius:50%;background:var(--amber);"></div>
-        <h3>Upcoming</h3>
-        <div class="count">1</div>
-        <div class="line"></div>
-      </div>
-      <div class="trips-grid">
-        <div class="trip-card" onclick="location.href='{{ url_for('main.itinerary') }}'">
-          <div class="trip-card-thumb" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">
-            🏔️
-            <div class="status-dot upcoming"></div>
-          </div>
-          <div class="trip-card-body">
-            <div class="trip-name">Swiss Alps Hiking Adventure</div>
-            <div class="trip-route">📍 Zurich · Interlaken · Zermatt</div>
-            <div class="trip-card-meta">
-              <div class="meta-item">🗓️ Aug 3 – Aug 10, 2025</div>
-              <div class="meta-item">⏱ 7 days</div>
-              <div class="meta-item">💰 $3,200 budget</div>
-              <div class="meta-item">👥 2 people</div>
-            </div>
-            <div style="margin-top:10px;"><span class="badge badge-amber">Starts in 84 days</span></div>
-          </div>
-          <div class="trip-card-actions">
-            <button class="action-btn primary">View</button>
-            <button class="action-btn" onclick="event.stopPropagation();location.href='{{ url_for('main.itinerary_builder') }}'">Edit</button>
-            <button class="action-btn danger" onclick="event.stopPropagation();">Delete</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Completed -->
-    <div class="trips-section">
-      <div class="trips-section-title">
-        <div style="width:8px;height:8px;border-radius:50%;background:var(--text-light);"></div>
-        <h3>Completed</h3>
-        <div class="count">3</div>
-        <div class="line"></div>
-      </div>
-      <div class="trips-grid">
-        <div class="trip-card" style="opacity:0.85;" onclick="location.href='{{ url_for('main.itinerary') }}'">
-          <div class="trip-card-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2);">
-            🗼
-            <div class="status-dot completed"></div>
-          </div>
-          <div class="trip-card-body">
-            <div class="trip-name">Paris & Amsterdam Escape</div>
-            <div class="trip-route">📍 Paris · Amsterdam · Brussels</div>
-            <div class="trip-card-meta">
-              <div class="meta-item">🗓️ Mar 12 – Mar 22, 2025</div>
-              <div class="meta-item">⏱ 10 days</div>
-              <div class="meta-item">💰 Spent $2,840</div>
-            </div>
-            <div style="margin-top:10px;"><span class="badge badge-teal">✓ Completed</span></div>
-          </div>
-          <div class="trip-card-actions">
-            <button class="action-btn primary">View</button>
-            <button class="action-btn">Share</button>
-            <button class="action-btn danger" onclick="event.stopPropagation();">Delete</button>
-          </div>
-        </div>
-        <div class="trip-card" style="opacity:0.85;" onclick="location.href='{{ url_for('main.itinerary') }}'">
-          <div class="trip-card-thumb" style="background:linear-gradient(135deg,#f093fb,#f5576c);">
-            🗽
-            <div class="status-dot completed"></div>
-          </div>
-          <div class="trip-card-body">
-            <div class="trip-name">East Coast Road Trip</div>
-            <div class="trip-route">📍 New York · Boston · Washington DC</div>
-            <div class="trip-card-meta">
-              <div class="meta-item">🗓️ Jan 5 – Jan 14, 2025</div>
-              <div class="meta-item">⏱ 9 days</div>
-              <div class="meta-item">💰 Spent $1,920</div>
-            </div>
-            <div style="margin-top:10px;"><span class="badge badge-teal">✓ Completed</span></div>
-          </div>
-          <div class="trip-card-actions">
-            <button class="action-btn primary">View</button>
-            <button class="action-btn">Share</button>
-            <button class="action-btn danger" onclick="event.stopPropagation();">Delete</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align:center;padding:32px 0;">
-      <a href="{{ url_for('main.createtrip') }}" class="btn btn-primary btn-lg">+ Plan Your Next Adventure</a>
-    </div>
+    {% endfor %}
   </div>
 </div>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>

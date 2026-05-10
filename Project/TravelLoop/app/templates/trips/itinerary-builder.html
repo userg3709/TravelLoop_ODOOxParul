@@ -1,65 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Traveloop – Build Itinerary</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop - Build Itinerary</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
-.builder-layout { display: grid; grid-template-columns: 1fr 360px; gap: 28px; }
-.section-block { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; transition: box-shadow 0.2s; }
-.section-block:hover { box-shadow: var(--shadow-md); }
+.builder-layout { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
+.section-block { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
 .section-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: var(--sand-light); }
 .section-num { width: 32px; height: 32px; border-radius: 50%; background: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
 .section-header-info { flex: 1; }
 .section-header-info h4 { font-weight: 600; font-size: 0.95rem; color: var(--navy); }
 .section-header-info p { font-size: 0.8rem; color: var(--text-light); margin-top: 1px; }
-.section-actions { display: flex; gap: 8px; }
 .section-body { padding: 20px; }
-.section-meta { display: flex; gap: 12px; flex-wrap: wrap; }
-.meta-chip { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 0.82rem; color: var(--text-mid); background: white; cursor: pointer; transition: all 0.2s; }
-.meta-chip:hover { border-color: var(--amber); color: var(--amber); }
-.meta-chip.set { background: #fef3c7; border-color: var(--amber); color: #92400e; }
-.section-desc { margin-top: 12px; color: var(--text-mid); font-size: 0.875rem; line-height: 1.6; padding: 12px; background: var(--sand-light); border-radius: 8px; }
-
 .activity-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .activity-row:last-child { border-bottom: none; }
-.activity-drag { color: var(--text-light); cursor: grab; font-size: 0.85rem; }
-.activity-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.activity-icon { width: 36px; height: 36px; border-radius: 8px; background:var(--sand-light); display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--navy); flex-shrink:0; }
 .activity-info { flex: 1; }
 .activity-info .name { font-size: 0.875rem; font-weight: 500; color: var(--navy); }
 .activity-info .meta { font-size: 0.75rem; color: var(--text-light); }
 .activity-cost { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-mid); }
-.activity-del { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 0.9rem; padding: 4px; border-radius: 4px; }
-.activity-del:hover { color: var(--coral); background: #fee2e2; }
-
-.add-section-btn { background: white; border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; cursor: pointer; transition: all 0.25s; color: var(--text-light); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.add-section-btn:hover { border-color: var(--amber); color: var(--amber); background: #fef9f0; }
-
+.edit-form { display: grid; gap: 12px; margin-bottom: 16px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.form-grid .full { grid-column: 1 / -1; }
+.edit-form label { display: grid; gap: 5px; font-size: 0.74rem; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.04em; }
+.edit-form input, .edit-form textarea, .edit-form select { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; font: inherit; color: var(--navy); background: white; }
+.edit-form textarea { min-height: 68px; resize: vertical; }
+.form-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.activity-edit { border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; background: #fff; }
+.activity-edit-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.activity-edit-header .activity-info { min-width: 0; }
+.activity-edit-header .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.add-card { background: white; border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 18px; }
+.delete-form { margin: 0; }
 .sidebar-sticky { position: sticky; top: calc(var(--nav-h) + 24px); display: flex; flex-direction: column; gap: 16px; }
-.budget-overview { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; }
-.budget-overview h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 16px; }
-.budget-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.budget-overview, .timeline-mini { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; }
+.budget-overview h4, .timeline-mini h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 16px; }
 .budget-total .amount { font-family: var(--font-display); font-size: 1.75rem; color: var(--navy); font-weight: 700; }
-.budget-total .limit { font-size: 0.8rem; color: var(--text-light); }
-.budget-bar { height: 10px; border-radius: 5px; background: var(--sand-light); margin-bottom: 12px; overflow: hidden; }
-.budget-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--teal), var(--teal-light)); }
-.budget-cats { display: flex; flex-direction: column; gap: 8px; }
-.budget-cat { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
-.budget-cat .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.budget-cat .name { flex: 1; color: var(--text-mid); }
+.budget-cat, .timeline-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; margin-bottom: 8px; }
+.budget-cat .name, .timeline-info { flex: 1; color: var(--text-mid); }
 .budget-cat .amt { color: var(--navy); font-weight: 600; font-family: var(--font-mono); font-size: 0.78rem; }
-
-.timeline-mini { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; }
-.timeline-mini h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 14px; }
-.timeline-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
-.timeline-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 5px; }
-.timeline-line { width: 2px; background: var(--border); flex: 1; min-height: 20px; margin-top: 4px; }
-.timeline-item:last-child .timeline-line { display: none; }
-.timeline-info .city { font-weight: 600; font-size: 0.85rem; color: var(--navy); }
-.timeline-info .dates { font-size: 0.75rem; color: var(--text-light); }
-
 @media (max-width: 900px) { .builder-layout { grid-template-columns: 1fr; } .sidebar-sticky { position: static; } }
+@media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -72,195 +56,186 @@
     <a href="{{ url_for('main.index') }}">Community</a>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
-    <button class="btn btn-outline btn-sm">👁 Preview</button>
-    <button class="btn btn-primary btn-sm" onclick="location.href='{{ url_for('main.itinerary') }}'">Save & View →</button>
-    <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
+    {% if trip %}<button class="btn btn-primary btn-sm" onclick="location.href='{{ url_for('main.itinerary', trip_id=trip.id) }}'">Save & View</button>{% endif %}
+    <div class="nav-avatar">{{ initials }}</div>
   </div>
 </nav>
 
 <div class="page-wrap">
   <div class="page-hero">
     <div class="content">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-        <a href="{{ url_for('main.createtrip') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">← Create Trip</a>
-        <span style="color:rgba(255,255,255,0.3);">/</span>
-        <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Itinerary Builder</span>
-      </div>
-      <h1>🗺️ Build Itinerary</h1>
-      <p>Southeast Asia Loop · Jun 10 – Jun 28, 2025 · 18 days</p>
+      <a href="{{ url_for('main.createtrip') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;">Create Trip</a>
+      <h1>Build Itinerary</h1>
+      <p>{{ trip.trip_name ~ " | " ~ (trip|date_range) if trip else "Create a trip to start building" }}</p>
     </div>
   </div>
 
   <div class="content">
+    {% if trip %}
     <div class="builder-layout">
-      <!-- Builder Sections -->
       <div>
-        <!-- Section 1 -->
-        <div class="section-block fade-up">
+        {% for region in trip.regions %}
+        <div class="section-block">
           <div class="section-header">
-            <div class="section-num">1</div>
+            <div class="section-num">{{ loop.index }}</div>
             <div class="section-header-info">
-              <h4>Bangkok, Thailand</h4>
-              <p>Day 1–4 · Grand Palace, street food, temples</p>
-            </div>
-            <div class="section-actions">
-              <button class="btn btn-ghost btn-sm">⇅ Reorder</button>
-              <button class="btn btn-ghost btn-sm" style="color:var(--coral);">🗑</button>
+              <h4>{{ region.city or region.name }}</h4>
+              <p>{{ region.country or "Destination" }}</p>
             </div>
           </div>
           <div class="section-body">
-            <div class="section-desc">
-              All the necessary information about this stop. This can include hotel check-in details, local transport tips, or area highlights. Use notes for specific day reminders.
+            <form class="edit-form" method="post" action="{{ url_for('main.update_itinerary_section', trip_id=trip.id, region_id=region.id) }}">
+              <div class="form-grid">
+                <label>Section name
+                  <input name="name" value="{{ region.name or '' }}">
+                </label>
+                <label>City
+                  <input name="city" value="{{ region.city or '' }}">
+                </label>
+                <label>Country
+                  <input name="country" value="{{ region.country or '' }}">
+                </label>
+                <label>Start date
+                  <input type="date" name="start_date" value="{{ region.start_date.isoformat() if region.start_date else '' }}">
+                </label>
+                <label>End date
+                  <input type="date" name="end_date" value="{{ region.end_date.isoformat() if region.end_date else '' }}">
+                </label>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary btn-sm" type="submit">Save Section</button>
+              </div>
+            </form>
+            <div class="divider"></div>
+            {% set items = trip.itinerary_items|selectattr("region_id", "equalto", region.id)|list %}
+            {% for item in items %}
+            <div class="activity-edit">
+              <div class="activity-edit-header">
+                <div class="activity-icon">IT</div>
+                <div class="activity-info"><div class="name">{{ item.title }}</div><div class="meta">{{ item.description or "No notes" }}</div></div>
+                <div class="activity-cost">{{ item.currency or "USD" }} {{ "%.0f"|format(item.budget_amount or 0) }}</div>
+              </div>
+              <form class="edit-form" method="post" action="{{ url_for('main.update_itinerary_item', trip_id=trip.id, item_id=item.id) }}">
+                <div class="form-grid">
+                  <label class="full">Activity title
+                    <input name="title" value="{{ item.title or '' }}">
+                  </label>
+                  <label class="full">Notes
+                    <textarea name="description">{{ item.description or '' }}</textarea>
+                  </label>
+                  <label>Start date
+                    <input type="date" name="start_date" value="{{ item.start_date.isoformat() if item.start_date else '' }}">
+                  </label>
+                  <label>End date
+                    <input type="date" name="end_date" value="{{ item.end_date.isoformat() if item.end_date else '' }}">
+                  </label>
+                  <label>Budget
+                    <input type="number" min="0" step="0.01" name="budget_amount" value="{{ item.budget_amount or '' }}">
+                  </label>
+                  <label>Currency
+                    <input name="currency" value="{{ item.currency or 'INR' }}">
+                  </label>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-sm" type="submit">Save Activity</button>
+                </div>
+              </form>
+              <form class="delete-form" method="post" action="{{ url_for('main.delete_itinerary_item', trip_id=trip.id, item_id=item.id) }}">
+                <button class="btn btn-secondary btn-sm" type="submit">Delete Activity</button>
+              </form>
             </div>
-            <div class="section-meta" style="margin-top:14px;margin-bottom:14px;">
-              <div class="meta-chip set">📅 Jun 10 – Jun 14</div>
-              <div class="meta-chip set">💵 Budget: $450</div>
-              <div class="meta-chip">🏨 Add Hotel</div>
-              <div class="meta-chip">✈️ Add Flight</div>
-            </div>
-            <div class="activity-row">
-              <span class="activity-drag">⠿</span>
-              <div class="activity-icon" style="background:#fef3c7;">🏛️</div>
-              <div class="activity-info"><div class="name">Grand Palace & Wat Pho</div><div class="meta">⏱ 3h · Cultural · Morning</div></div>
-              <div class="activity-cost">$25</div>
-              <button class="activity-del">✕</button>
-            </div>
-            <div class="activity-row">
-              <span class="activity-drag">⠿</span>
-              <div class="activity-icon" style="background:#d1fae5;">🍜</div>
-              <div class="activity-info"><div class="name">Chatuchak Weekend Market</div><div class="meta">⏱ 4h · Food & Shopping · Afternoon</div></div>
-              <div class="activity-cost">$40</div>
-              <button class="activity-del">✕</button>
-            </div>
-            <div class="activity-row">
-              <span class="activity-drag">⠿</span>
-              <div class="activity-icon" style="background:#ede9fe;">🛶</div>
-              <div class="activity-info"><div class="name">Chao Phraya River Cruise</div><div class="meta">⏱ 2h · Sightseeing · Evening</div></div>
-              <div class="activity-cost">$30</div>
-              <button class="activity-del">✕</button>
-            </div>
-            <button class="btn btn-ghost btn-sm" style="margin-top:8px;color:var(--amber);border:1.5px dashed rgba(212,136,42,0.4);width:100%;justify-content:center;">+ Add Activity</button>
+            {% else %}
+            <div style="color:var(--text-light);font-size:0.85rem;">No activities assigned to this destination yet.</div>
+            {% endfor %}
+            <div class="divider"></div>
+            <form class="edit-form" method="post" action="{{ url_for('main.add_itinerary_item', trip_id=trip.id, region_id=region.id) }}">
+              <div class="form-grid">
+                <label class="full">New activity
+                  <input name="title">
+                </label>
+                <label class="full">Notes
+                  <textarea name="description"></textarea>
+                </label>
+                <label>Start date
+                  <input type="date" name="start_date">
+                </label>
+                <label>End date
+                  <input type="date" name="end_date">
+                </label>
+                <label>Budget
+                  <input type="number" min="0" step="0.01" name="budget_amount">
+                </label>
+                <label>Currency
+                  <input name="currency" value="INR">
+                </label>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-secondary btn-sm" type="submit">Add Activity</button>
+              </div>
+            </form>
+            <form class="delete-form" method="post" action="{{ url_for('main.delete_itinerary_section', trip_id=trip.id, region_id=region.id) }}">
+              <button class="btn btn-secondary btn-sm" type="submit">Delete Section</button>
+            </form>
           </div>
         </div>
-
-        <!-- Section 2 -->
-        <div class="section-block fade-up" style="animation-delay:0.1s;">
-          <div class="section-header">
-            <div class="section-num">2</div>
-            <div class="section-header-info">
-              <h4>Chiang Mai, Thailand</h4>
-              <p>Day 5–8 · Elephant sanctuary, night bazaar, cooking class</p>
-            </div>
-            <div class="section-actions">
-              <button class="btn btn-ghost btn-sm">⇅ Reorder</button>
-              <button class="btn btn-ghost btn-sm" style="color:var(--coral);">🗑</button>
-            </div>
-          </div>
-          <div class="section-body">
-            <div class="section-meta" style="margin-bottom:14px;">
-              <div class="meta-chip set">📅 Jun 14 – Jun 18</div>
-              <div class="meta-chip set">💵 Budget: $380</div>
-              <div class="meta-chip">🏨 Add Hotel</div>
-            </div>
-            <div class="activity-row">
-              <span class="activity-drag">⠿</span>
-              <div class="activity-icon" style="background:#fce7f3;">🐘</div>
-              <div class="activity-info"><div class="name">Elephant Nature Park</div><div class="meta">⏱ Full day · Wildlife · Morning</div></div>
-              <div class="activity-cost">$75</div>
-              <button class="activity-del">✕</button>
-            </div>
-            <div class="activity-row">
-              <span class="activity-drag">⠿</span>
-              <div class="activity-icon" style="background:#fef3c7;">👩‍🍳</div>
-              <div class="activity-info"><div class="name">Thai Cooking Class</div><div class="meta">⏱ 4h · Food & Culture</div></div>
-              <div class="activity-cost">$35</div>
-              <button class="activity-del">✕</button>
-            </div>
-            <button class="btn btn-ghost btn-sm" style="margin-top:8px;color:var(--amber);border:1.5px dashed rgba(212,136,42,0.4);width:100%;justify-content:center;">+ Add Activity</button>
-          </div>
+        {% else %}
+        <div class="section-block">
+          <div class="section-header"><div class="section-num">1</div><div class="section-header-info"><h4>No destinations yet</h4><p>Add destinations from the create trip page.</p></div></div>
         </div>
-
-        <!-- Section 3 -->
-        <div class="section-block fade-up" style="animation-delay:0.2s;">
-          <div class="section-header">
-            <div class="section-num">3</div>
-            <div class="section-header-info">
-              <h4>Bali, Indonesia</h4>
-              <p>Day 9–18 · Temples, rice terraces, beach clubs</p>
+        {% endfor %}
+        <div class="add-card">
+          <form class="edit-form" method="post" action="{{ url_for('main.add_itinerary_section', trip_id=trip.id) }}">
+            <div class="form-grid">
+              <label>Section name
+                <input name="name">
+              </label>
+              <label>City
+                <input name="city">
+              </label>
+              <label>Country
+                <input name="country">
+              </label>
+              <label>Start date
+                <input type="date" name="start_date">
+              </label>
+              <label>End date
+                <input type="date" name="end_date">
+              </label>
             </div>
-            <div class="section-actions">
-              <button class="btn btn-ghost btn-sm">⇅ Reorder</button>
-              <button class="btn btn-ghost btn-sm" style="color:var(--coral);">🗑</button>
+            <div class="form-actions">
+              <button class="btn btn-primary btn-sm" type="submit">Add Section</button>
             </div>
-          </div>
-          <div class="section-body">
-            <div class="section-meta" style="margin-bottom:14px;">
-              <div class="meta-chip set">📅 Jun 18 – Jun 28</div>
-              <div class="meta-chip set">💵 Budget: $820</div>
-              <div class="meta-chip">🏨 Add Hotel</div>
-            </div>
-            <div class="activity-row">
-              <span class="activity-drag">⠿</span>
-              <div class="activity-icon" style="background:#d1fae5;">🌾</div>
-              <div class="activity-info"><div class="name">Tegallalang Rice Terraces</div><div class="meta">⏱ 3h · Nature · Morning</div></div>
-              <div class="activity-cost">$15</div>
-              <button class="activity-del">✕</button>
-            </div>
-            <button class="btn btn-ghost btn-sm" style="margin-top:8px;color:var(--amber);border:1.5px dashed rgba(212,136,42,0.4);width:100%;justify-content:center;">+ Add Activity</button>
-          </div>
-        </div>
-
-        <div class="add-section-btn" onclick="void(0)">
-          + Add Another Stop
+          </form>
         </div>
       </div>
 
-      <!-- Sidebar -->
       <div class="sidebar-sticky">
         <div class="budget-overview">
-          <h4>💰 Budget Overview</h4>
-          <div class="budget-total">
-            <div>
-              <div class="amount">$1,650</div>
-              <div class="limit">of $4,000 budget</div>
-            </div>
-            <span class="badge badge-teal">41% used</span>
-          </div>
-          <div class="budget-bar"><div class="budget-bar-fill" style="width:41%;"></div></div>
-          <div class="budget-cats">
-            <div class="budget-cat"><div class="dot" style="background:var(--teal);"></div><span class="name">Activities</span><span class="amt">$220</span></div>
-            <div class="budget-cat"><div class="dot" style="background:var(--amber);"></div><span class="name">Accommodation</span><span class="amt">$850</span></div>
-            <div class="budget-cat"><div class="dot" style="background:var(--coral);"></div><span class="name">Transport</span><span class="amt">$410</span></div>
-            <div class="budget-cat"><div class="dot" style="background:#a78bfa;"></div><span class="name">Food</span><span class="amt">$170</span></div>
-          </div>
+          <h4>Budget Overview</h4>
+          <div class="budget-total"><div class="amount">${{ "%.0f"|format(trip|trip_budget) }}</div></div>
+          {% for item in trip.itinerary_items %}
+          <div class="budget-cat"><span class="name">{{ item.title }}</span><span class="amt">${{ "%.0f"|format(item.budget_amount or 0) }}</span></div>
+          {% else %}
+          <div style="color:var(--text-light);font-size:0.82rem;">No budget items yet.</div>
+          {% endfor %}
         </div>
-
         <div class="timeline-mini">
-          <h4>📍 Route Overview</h4>
-          <div class="timeline-item">
-            <div class="timeline-dot-wrap"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-            <div class="timeline-info"><div class="city">Bangkok, Thailand</div><div class="dates">Jun 10 – Jun 14</div></div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot-wrap"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-            <div class="timeline-info"><div class="city">Chiang Mai, Thailand</div><div class="dates">Jun 14 – Jun 18</div></div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot-wrap"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-            <div class="timeline-info"><div class="city">Bali, Indonesia</div><div class="dates">Jun 18 – Jun 28</div></div>
-          </div>
-        </div>
-
-        <div class="card card-pad">
-          <h4 style="font-weight:600;font-size:0.9rem;color:var(--navy);margin-bottom:12px;">⚡ Quick Actions</h4>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <a href="{{ url_for('main.activities') }}" class="btn btn-outline btn-sm" style="justify-content:center;">🔍 Search Activities</a>
-            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">🧳 Packing Checklist</a>
-            <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm" style="justify-content:center;">📝 Trip Notes</a>
-          </div>
+          <h4>Route Overview</h4>
+          {% for region in trip.regions %}
+          <div class="timeline-item"><div class="timeline-info">{{ region.city or region.name }}</div></div>
+          {% else %}
+          <div style="color:var(--text-light);font-size:0.82rem;">No route yet.</div>
+          {% endfor %}
         </div>
       </div>
     </div>
+    {% else %}
+    <div class="empty-state">
+      <h3>No trips found</h3>
+      <p>Create a trip first, then return to the builder.</p>
+      <a href="{{ url_for('main.createtrip') }}" class="btn btn-primary">Create Trip</a>
+    </div>
+    {% endif %}
   </div>
 </div>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>

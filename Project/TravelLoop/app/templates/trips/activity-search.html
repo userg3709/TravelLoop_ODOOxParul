@@ -1,55 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Traveloop – Search Activities</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveloop - Search Activities</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <style>
 .search-layout { display: grid; grid-template-columns: 280px 1fr; gap: 28px; }
 .filter-panel { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 24px; position: sticky; top: calc(var(--nav-h) + 24px); height: fit-content; }
 .filter-panel h4 { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 16px; display: flex; justify-content: space-between; }
-.filter-panel h4 a { font-weight: 400; color: var(--amber); font-size: 0.8rem; text-decoration: none; }
 .filter-group { margin-bottom: 24px; }
 .filter-group label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); display: block; margin-bottom: 10px; }
 .check-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer; }
-.check-item input[type=checkbox] { accent-color: var(--amber); }
 .check-item span { font-size: 0.875rem; color: var(--text-mid); }
-.check-item:hover span { color: var(--navy); }
-.range-input { display: flex; gap: 8px; align-items: center; }
-.range-input input { flex: 1; padding: 8px 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-family: var(--font-body); font-size: 0.85rem; outline: none; }
-.range-input input:focus { border-color: var(--amber); }
-.range-input span { color: var(--text-light); font-size: 0.85rem; }
-
 .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 .results-header .count { color: var(--text-light); font-size: 0.875rem; }
-.results-header .count strong { color: var(--navy); }
 .sort-row { display: flex; gap: 8px; }
 .sort-btn { padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-family: var(--font-body); font-size: 0.8rem; cursor: pointer; color: var(--text-mid); transition: all 0.2s; }
 .sort-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
-
 .results-list { display: flex; flex-direction: column; gap: 14px; }
 .result-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; display: flex; gap: 18px; align-items: flex-start; transition: all 0.2s; cursor: pointer; }
 .result-card:hover { box-shadow: var(--shadow-md); border-color: var(--amber); }
-.result-icon { width: 72px; height: 72px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+.result-icon { width: 72px; height: 72px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:700; color:var(--navy); flex-shrink: 0; background:var(--sand-light); }
 .result-info { flex: 1; min-width: 0; }
 .result-info h4 { font-weight: 600; font-size: 0.975rem; color: var(--navy); margin-bottom: 4px; }
 .result-info .location { color: var(--text-light); font-size: 0.8rem; margin-bottom: 8px; }
-.result-info .desc { color: var(--text-mid); font-size: 0.82rem; line-height: 1.5; margin-bottom: 10px; }
 .result-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .result-tag { background: var(--sand-light); color: var(--text-mid); border-radius: 20px; padding: 3px 10px; font-size: 0.72rem; font-weight: 500; }
 .result-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
 .result-price { font-family: var(--font-display); font-size: 1.25rem; color: var(--navy); font-weight: 700; }
-.result-price span { font-family: var(--font-body); font-size: 0.75rem; color: var(--text-light); font-weight: 400; }
-.result-rating { display: flex; align-items: center; gap: 4px; font-size: 0.82rem; }
-.result-duration { font-size: 0.8rem; color: var(--text-light); }
-
 .search-hero { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; display: flex; gap: 12px; }
 .search-hero-input { flex: 1; display: flex; align-items: center; gap: 10px; background: var(--sand-light); border-radius: var(--radius-sm); padding: 12px 16px; }
 .search-hero-input input { flex: 1; border: none; outline: none; background: transparent; font-family: var(--font-body); font-size: 0.95rem; color: var(--text-dark); }
-.tab-btns { display: flex; gap: 4px; background: var(--sand-light); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
-.tab-btn { flex: 1; padding: 8px 16px; border-radius: 6px; border: none; font-family: var(--font-body); font-size: 0.875rem; font-weight: 500; cursor: pointer; color: var(--text-mid); background: transparent; transition: all 0.2s; }
-.tab-btn.active { background: white; color: var(--navy); box-shadow: var(--shadow-sm); }
-
 @media (max-width: 768px) { .search-layout { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { flex-direction: column; } .result-meta { flex-direction: row; align-items: center; } }
 </style>
 </head>
@@ -62,196 +44,72 @@
     <a href="{{ url_for('main.createtrip') }}">Plan Trip</a>
     <a href="{{ url_for('main.index') }}">Community</a>
   </div>
-  <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
+  <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">{{ initials }}</a></div>
 </nav>
 
 <div class="page-wrap">
   <div class="page-hero">
     <div class="content">
-      <h1>🔍 Discover Activities & Cities</h1>
-      <p>Find experiences to enrich your trip — filter by type, cost, and duration</p>
+      <h1>Discover Activities & Cities</h1>
+      <p>Find experiences to enrich your trip</p>
     </div>
   </div>
 
   <div class="content">
-    <!-- Tab Switcher -->
-    <div class="tab-btns" style="max-width:360px;">
-      <button class="tab-btn active">🎯 Activities</button>
-      <button class="tab-btn">🏙️ Cities</button>
-      <button class="tab-btn">🏨 Hotels</button>
-    </div>
-
     <div class="search-layout">
-      <!-- Filters -->
       <div class="filter-panel">
-        <h4>Filters <a href="#">Clear all</a></h4>
-
+        <h4>Filters <a href="{{ url_for('main.activities') }}" style="color:var(--amber);font-size:0.8rem;text-decoration:none;">Clear</a></h4>
         <div class="filter-group">
           <label>Category</label>
-          <div class="check-item"><input type="checkbox" checked><span>🏛️ Culture & History</span></div>
-          <div class="check-item"><input type="checkbox" checked><span>🍜 Food & Dining</span></div>
-          <div class="check-item"><input type="checkbox"><span>🏔️ Adventure</span></div>
-          <div class="check-item"><input type="checkbox"><span>🌿 Nature</span></div>
-          <div class="check-item"><input type="checkbox"><span>🛍️ Shopping</span></div>
-          <div class="check-item"><input type="checkbox"><span>🎭 Entertainment</span></div>
-          <div class="check-item"><input type="checkbox"><span>🏖️ Beach</span></div>
-        </div>
-
-        <div class="filter-group">
-          <label>Price Range (USD)</label>
-          <div class="range-input">
-            <input type="number" placeholder="Min" value="0">
-            <span>–</span>
-            <input type="number" placeholder="Max" value="200">
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <label>Duration</label>
-          <div class="check-item"><input type="checkbox"><span>Under 2 hours</span></div>
-          <div class="check-item"><input type="checkbox" checked><span>2–4 hours</span></div>
-          <div class="check-item"><input type="checkbox"><span>Half day</span></div>
-          <div class="check-item"><input type="checkbox"><span>Full day</span></div>
-          <div class="check-item"><input type="checkbox"><span>Multi-day</span></div>
-        </div>
-
-        <div class="filter-group">
-          <label>Rating</label>
-          <div class="check-item"><input type="checkbox"><span>⭐⭐⭐⭐⭐ 5 stars</span></div>
-          <div class="check-item"><input type="checkbox" checked><span>⭐⭐⭐⭐ 4+ stars</span></div>
-          <div class="check-item"><input type="checkbox"><span>⭐⭐⭐ 3+ stars</span></div>
-        </div>
-
-        <div class="filter-group" style="margin-bottom:0;">
-          <label>Region / Country</label>
-          <select style="width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);font-family:var(--font-body);outline:none;font-size:0.875rem;">
-            <option>All Regions</option>
-            <option>Southeast Asia</option>
-            <option>Europe</option>
-            <option>Americas</option>
-            <option>Middle East</option>
-            <option>Africa</option>
-          </select>
+          <div class="check-item"><input type="checkbox" checked><span>Culture & History</span></div>
+          <div class="check-item"><input type="checkbox" checked><span>Food & Dining</span></div>
+          <div class="check-item"><input type="checkbox"><span>Adventure</span></div>
+          <div class="check-item"><input type="checkbox"><span>Nature</span></div>
         </div>
       </div>
 
-      <!-- Results -->
       <div>
-        <div class="search-hero">
+        <form class="search-hero" method="GET" action="{{ url_for('main.activities') }}">
           <div class="search-hero-input">
-            <span>🔍</span>
-            <input type="text" placeholder="Search activities, tours, experiences…" value="Bangkok activities">
+            <span>Search</span>
+            <input type="text" name="q" aria-label="Search activities, tours, experiences" value="{{ query }}">
           </div>
           <button class="btn btn-primary">Search</button>
-        </div>
+        </form>
 
         <div class="results-header">
-          <div class="count">Showing <strong>47 results</strong> for "Bangkok activities"</div>
+          <div class="count">Showing <strong>{{ activities|length }} results</strong> for "{{ query }}"</div>
           <div class="sort-row">
             <button class="sort-btn active">Recommended</button>
-            <button class="sort-btn">Price ↑</button>
-            <button class="sort-btn">Rating ↓</button>
-            <button class="sort-btn">Duration</button>
+            <button class="sort-btn">Price</button>
+            <button class="sort-btn">Rating</button>
           </div>
         </div>
 
         <div class="results-list">
+          {% for activity in activities %}
           <div class="result-card">
-            <div class="result-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">🏛️</div>
+            <div class="result-icon">{{ activity.category[:2].upper() }}</div>
             <div class="result-info">
-              <h4>Grand Palace & Wat Pho Full Tour</h4>
-              <div class="location">📍 Bangkok, Thailand · 1.2km from center</div>
-              <div class="desc">Explore the dazzling Grand Palace complex and the famous Reclining Buddha at Wat Pho with an expert local guide.</div>
+              <h4>{{ activity.title }}</h4>
+              <div class="location">{{ activity.location }}</div>
               <div class="result-tags">
-                <div class="result-tag">Cultural</div>
-                <div class="result-tag">Guided Tour</div>
-                <div class="result-tag">3 hours</div>
-                <div class="result-tag">Morning slot</div>
+                <div class="result-tag">{{ activity.category }}</div>
+                <div class="result-tag">{{ activity.duration }}</div>
+                <div class="result-tag">{{ activity.rating }} rating</div>
               </div>
             </div>
             <div class="result-meta">
-              <div class="result-price">$35<span>/person</span></div>
-              <div class="result-rating">⭐ 4.9 <span style="color:var(--text-light);">(2.4k)</span></div>
-              <div class="result-duration">⏱ 3 hrs</div>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();">+ Add to Trip</button>
+              <div class="result-price">{{ activity.currency }} {{ activity.price }}</div>
+              <button class="btn btn-primary btn-sm" type="button">+ Add to Trip</button>
             </div>
           </div>
-
-          <div class="result-card">
-            <div class="result-icon" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">🍜</div>
-            <div class="result-info">
-              <h4>Bangkok Street Food Night Tour</h4>
-              <div class="location">📍 Chinatown & Silom, Bangkok</div>
-              <div class="desc">Taste your way through Bangkok's legendary street food scene — from pad thai to mango sticky rice, guided by a local foodie.</div>
-              <div class="result-tags">
-                <div class="result-tag">Food</div>
-                <div class="result-tag">Evening</div>
-                <div class="result-tag">4 hours</div>
-                <div class="result-tag">Small Group</div>
-              </div>
-            </div>
-            <div class="result-meta">
-              <div class="result-price">$45<span>/person</span></div>
-              <div class="result-rating">⭐ 4.8 <span style="color:var(--text-light);">(1.8k)</span></div>
-              <div class="result-duration">⏱ 4 hrs</div>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();">+ Add to Trip</button>
-            </div>
-          </div>
-
-          <div class="result-card">
-            <div class="result-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);">🛶</div>
-            <div class="result-info">
-              <h4>Chao Phraya Sunset River Cruise</h4>
-              <div class="location">📍 Chao Phraya River, Bangkok</div>
-              <div class="desc">Glide along Bangkok's iconic river at golden hour, taking in stunning views of temples and the city skyline.</div>
-              <div class="result-tags">
-                <div class="result-tag">Sightseeing</div>
-                <div class="result-tag">Sunset</div>
-                <div class="result-tag">2 hours</div>
-              </div>
-            </div>
-            <div class="result-meta">
-              <div class="result-price">$28<span>/person</span></div>
-              <div class="result-rating">⭐ 4.7 <span style="color:var(--text-light);">(980)</span></div>
-              <div class="result-duration">⏱ 2 hrs</div>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();">+ Add to Trip</button>
-            </div>
-          </div>
-
-          <div class="result-card">
-            <div class="result-icon" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);">🧘</div>
-            <div class="result-info">
-              <h4>Muay Thai Class for Beginners</h4>
-              <div class="location">📍 Sor Vorapin Gym, Bangkok</div>
-              <div class="desc">Learn the basics of Thailand's national sport from professional trainers in an authentic training environment.</div>
-              <div class="result-tags">
-                <div class="result-tag">Sport</div>
-                <div class="result-tag">Active</div>
-                <div class="result-tag">2.5 hours</div>
-                <div class="result-tag">Beginner-friendly</div>
-              </div>
-            </div>
-            <div class="result-meta">
-              <div class="result-price">$40<span>/person</span></div>
-              <div class="result-rating">⭐ 4.9 <span style="color:var(--text-light);">(620)</span></div>
-              <div class="result-duration">⏱ 2.5 hrs</div>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();">+ Add to Trip</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="text-align:center;margin-top:24px;">
-          <button class="btn btn-outline">Load More Results</button>
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
 </div>
-<script>
-document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
-document.querySelectorAll('.sort-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.sort-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
-document.querySelectorAll('.result-meta .btn').forEach(b => b.addEventListener('click', (event) => { event.stopPropagation(); b.textContent = 'Added'; b.disabled = true; }));
-</script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

@@ -400,14 +400,14 @@
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <button class="btn btn-primary btn-sm" onclick="location.href='{{ url_for('main.createtrip') }}'">+ New Trip</button>
-    <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">AM</a></div>
+    <div class="nav-avatar nav-links"><a href="{{ url_for('main.profile') }}">{{ initials }}</a></div>
   </div>
 </nav>
 
 <div class="page-wrap">
   <section class="home-hero">
     <div class="home-hero-content fade-up">
-      <div class="home-kicker">Good morning, Alex</div>
+      <div class="home-kicker">Welcome back, {{ first_name }}</div>
       <h1>Where will your next <em>adventure</em> take you?</h1>
       <p>Discover destinations, build itineraries, compare trip ideas, and keep your plans in one calm workspace.</p>
       <div class="home-actions">
@@ -415,15 +415,15 @@
         <a href="{{ url_for('main.activities') }}" class="btn btn-lg" style="background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.22);">Explore Activities</a>
       </div>
       <div class="home-stats">
-        <div class="home-stat"><div class="num">5</div><div class="label">Trips Planned</div></div>
-        <div class="home-stat"><div class="num">12</div><div class="label">Cities Visited</div></div>
-        <div class="home-stat"><div class="num">$8.4k</div><div class="label">Total Budgeted</div></div>
+        <div class="home-stat"><div class="num">{{ stats.trips }}</div><div class="label">Trips Planned</div></div>
+        <div class="home-stat"><div class="num">{{ stats.cities }}</div><div class="label">Cities Visited</div></div>
+        <div class="home-stat"><div class="num">${{ "%.1f"|format(stats.budget / 1000) }}k</div><div class="label">Total Budgeted</div></div>
       </div>
     </div>
   </section>
 
   <div class="home-search fade-up">
-    <input type="text" placeholder="Search destinations, activities, hotels">
+    <input type="text" aria-label="Search destinations, activities, hotels">
     <div class="filter">Any date</div>
     <div class="filter">Travellers</div>
     <button class="btn btn-primary btn-sm">Search</button>
@@ -441,28 +441,14 @@
         </div>
 
         <div class="destination-grid">
+          {% for destination in curated_destinations %}
           <div class="destination-card">
-            <div class="bg bg-1">PAR</div>
+            <div class="bg bg-{{ loop.index }}">{{ destination.code }}</div>
             <div class="shade"></div>
-            <div class="tag">Popular</div>
-            <div class="info"><div class="city">Paris</div><div class="country">France</div><div class="price">From $1,200</div></div>
+            <div class="tag">{{ destination.tag }}</div>
+            <div class="info"><div class="city">{{ destination.city }}</div><div class="country">{{ destination.country }}</div><div class="price">{{ destination.price }}</div></div>
           </div>
-          <div class="destination-card">
-            <div class="bg bg-2">TYO</div>
-            <div class="shade"></div>
-            <div class="info"><div class="city">Tokyo</div><div class="country">Japan</div><div class="price">From $2,100</div></div>
-          </div>
-          <div class="destination-card">
-            <div class="bg bg-3">BLI</div>
-            <div class="shade"></div>
-            <div class="tag">Trending</div>
-            <div class="info"><div class="city">Bali</div><div class="country">Indonesia</div><div class="price">From $950</div></div>
-          </div>
-          <div class="destination-card">
-            <div class="bg bg-4">ROM</div>
-            <div class="shade"></div>
-            <div class="info"><div class="city">Rome</div><div class="country">Italy</div><div class="price">From $1,450</div></div>
-          </div>
+          {% endfor %}
         </div>
 
         <div class="section-head">
@@ -474,42 +460,24 @@
         </div>
 
         <div class="trip-list">
-          <div class="trip-row" onclick="location.href='{{ url_for('main.itinerary') }}'">
-            <div class="trip-thumb bg-1">PA</div>
+          {% if recent_trips %}
+          {% for trip in recent_trips %}
+          <div class="trip-row" onclick="location.href='{{ url_for('main.itinerary', trip_id=trip.id) }}'">
+            <div class="trip-thumb bg-{{ (loop.index % 4) + 1 }}">{{ trip.trip_name[:2].upper() }}</div>
             <div class="trip-info">
-              <h4>Paris & Amsterdam Escape</h4>
-              <p>France, Netherlands | Mar 12 - Mar 22, 2025</p>
+              <h4>{{ trip.trip_name }}</h4>
+              <p>{{ trip|trip_route }} | {{ trip|date_range }}</p>
             </div>
             <div class="trip-meta">
-              <span class="badge badge-teal">Completed</span>
-              <div class="days">10 days</div>
-              <div class="cost">$2,840</div>
+              <span class="badge badge-teal">{{ trip.status|title }}</span>
+              <div class="days">{{ trip|trip_days }} days</div>
+              <div class="cost">${{ "%.0f"|format(trip|trip_budget) }}</div>
             </div>
           </div>
-          <div class="trip-row" onclick="location.href='{{ url_for('main.itinerary') }}'">
-            <div class="trip-thumb bg-2">EC</div>
-            <div class="trip-info">
-              <h4>East Coast Road Trip</h4>
-              <p>New York, Boston, DC | Jan 5 - Jan 14, 2025</p>
-            </div>
-            <div class="trip-meta">
-              <span class="badge badge-teal">Completed</span>
-              <div class="days">9 days</div>
-              <div class="cost">$1,920</div>
-            </div>
-          </div>
-          <div class="trip-row" onclick="location.href='{{ url_for('main.itinerary') }}'">
-            <div class="trip-thumb bg-3">BR</div>
-            <div class="trip-info">
-              <h4>Bali Wellness Retreat</h4>
-              <p>Ubud, Seminyak, Nusa Penida | Nov 2024</p>
-            </div>
-            <div class="trip-meta">
-              <span class="badge badge-teal">Completed</span>
-              <div class="days">12 days</div>
-              <div class="cost">$1,540</div>
-            </div>
-          </div>
+          {% endfor %}
+          {% else %}
+          <div class="empty-panel">No trips yet. Plan your first adventure to see it here.</div>
+          {% endif %}
         </div>
 
         <div style="text-align:center;margin-top:24px;">
@@ -521,17 +489,16 @@
         <div class="weather-card">
           <div class="weather-top">
             <div>
-              <div class="weather-city">New York, US</div>
-              <div class="weather-temp">72 deg</div>
-              <div class="weather-desc">Partly cloudy | Feels like 70 deg</div>
+              <div class="weather-city">{{ readiness.title }}</div>
+              <div class="weather-temp">{{ upcoming_trips|length }}</div>
+              <div class="weather-desc">{{ readiness.summary }}</div>
             </div>
-            <div class="weather-icon">SUN</div>
+            <div class="weather-icon">PLAN</div>
           </div>
           <div class="weather-row">
-            <div><div class="day">Mon</div><div class="icon">Clouds</div><div class="temp">74</div></div>
-            <div><div class="day">Tue</div><div class="icon">Rain</div><div class="temp">65</div></div>
-            <div><div class="day">Wed</div><div class="icon">Sun</div><div class="temp">78</div></div>
-            <div><div class="day">Thu</div><div class="icon">Clouds</div><div class="temp">71</div></div>
+            {% for item in readiness.checks %}
+            <div><div class="day">Step {{ loop.index }}</div><div class="icon">{{ item }}</div><div class="temp">OK</div></div>
+            {% endfor %}
           </div>
         </div>
 
@@ -542,10 +509,10 @@
           </div>
           <div class="sidebar-card-body">
             <div class="quick-stats">
-              <div class="stat-box"><div class="val">5</div><div class="key">Total Trips</div></div>
-              <div class="stat-box"><div class="val">12</div><div class="key">Cities</div></div>
-              <div class="stat-box"><div class="val">3</div><div class="key">Countries</div></div>
-              <div class="stat-box"><div class="val">47</div><div class="key">Days Away</div></div>
+              <div class="stat-box"><div class="val">{{ stats.trips }}</div><div class="key">Total Trips</div></div>
+              <div class="stat-box"><div class="val">{{ stats.cities }}</div><div class="key">Cities</div></div>
+              <div class="stat-box"><div class="val">{{ stats.days }}</div><div class="key">Travel Days</div></div>
+              <div class="stat-box"><div class="val">${{ "%.0f"|format(stats.budget) }}</div><div class="key">Budget</div></div>
             </div>
           </div>
         </div>
@@ -556,22 +523,20 @@
             <a href="{{ url_for('main.mytrips') }}">All trips</a>
           </div>
           <div class="sidebar-card-body" style="display:flex;flex-direction:column;gap:12px;">
+            {% if upcoming_trips %}
+            {% for trip in upcoming_trips %}
             <div style="display:flex;gap:12px;align-items:center;">
-              <div class="trip-thumb bg-1" style="width:40px;height:40px;font-size:0.9rem;">SA</div>
+              <div class="trip-thumb bg-{{ (loop.index % 4) + 1 }}" style="width:40px;height:40px;font-size:0.9rem;">{{ trip.trip_name[:2].upper() }}</div>
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;font-size:0.875rem;color:var(--navy);">Southeast Asia Loop</div>
-                <div style="font-size:0.75rem;color:var(--text-light);">Jun 10 - Jun 28</div>
+                <div style="font-weight:600;font-size:0.875rem;color:var(--navy);">{{ trip.trip_name }}</div>
+                <div style="font-size:0.75rem;color:var(--text-light);">{{ trip|date_range }}</div>
               </div>
-              <div class="badge badge-amber">18d</div>
+              <div class="badge badge-amber">{{ trip|trip_days }}d</div>
             </div>
-            <div style="display:flex;gap:12px;align-items:center;">
-              <div class="trip-thumb bg-4" style="width:40px;height:40px;font-size:0.9rem;">CH</div>
-              <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;font-size:0.875rem;color:var(--navy);">Swiss Alps Hiking</div>
-                <div style="font-size:0.75rem;color:var(--text-light);">Aug 3 - Aug 10</div>
-              </div>
-              <div class="badge badge-navy">7d</div>
-            </div>
+            {% endfor %}
+            {% else %}
+            <div style="font-size:0.85rem;color:var(--text-light);">No upcoming trips yet.</div>
+            {% endif %}
           </div>
         </div>
 
