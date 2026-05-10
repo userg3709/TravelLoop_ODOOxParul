@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-
+from app.models import *
 
 main = Blueprint("main", __name__)
 
@@ -14,7 +14,7 @@ def register():
     return render_template("auth/register.html")
 
 @main.route("/profile")
-def register():
+def profile():
     return render_template("profile/profile.html")
 
 @main.route("/mytrips")
@@ -25,3 +25,12 @@ def mytrips():
 def createtrip():
     return render_template("trips/create.html")
 
+@main.route("/users")
+def show_users():
+    users = User.query.all()
+
+    for user in users:
+        # Use correct fields from your model
+        print(f"{user.first_name} {user.last_name} | {user.email} | {user.password_hash}")
+
+    return "done"

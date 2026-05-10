@@ -49,74 +49,61 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6a 100%); min-he
 
   <form action="/register" method="POST" class="form-stack">
 
-    <div class="form-grid">
+  <div class="form-grid">
 
-      <div class="field">
-        <label>First Name</label>
-        <input type="text" name="firstName" placeholder="Alex">
-      </div>
-
-      <div class="field">
-        <label>Last Name</label>
-        <input type="text" name="lastName" placeholder="Morgan">
-      </div>
-
-      <div class="field">
-        <label>Email Address</label>
-        <input type="email" name="email" placeholder="alex@email.com">
-      </div>
-
-      <div class="field">
-        <label>Phone Number</label>
-        <input type="tel" name="phone" placeholder="+1 (555) 000-0000">
-      </div>
-
-      <div class="field">
-        <label>City</label>
-        <input type="text" name="city" placeholder="New York">
-      </div>
-
-      <div class="field">
-        <label>Country</label>
-        <select name="country">
-          <option value="">Select country</option>
-          <option>United States</option>
-          <option>United Kingdom</option>
-          <option>Canada</option>
-          <option>Australia</option>
-          <option>India</option>
-          <option>Germany</option>
-          <option>France</option>
-          <option>Japan</option>
-        </select>
-      </div>
-
-      <div class="field" style="grid-column:1/-1;">
-        <label>Password</label>
-        <input type="password" name="password" placeholder="Create a strong password">
-      </div>
-
-      <div class="field form-full">
-        <label>Additional Information <span style="color:var(--text-light);font-weight:400;font-size:0.75rem;">(optional)</span></label>
-        <textarea name="about" placeholder="Tell us about your travel style…"></textarea>
-      </div>
-
+    <div class="field">
+      <label>First Name</label>
+      <input type="text" name="firstName" placeholder="Alex">
     </div>
 
-    <div class="terms">
-      <input type="checkbox" name="terms" required>
-      <label>I agree to the Terms of Service and Privacy Policy.</label>
+    <div class="field">
+      <label>Last Name</label>
+      <input type="text" name="lastName" placeholder="Morgan">
     </div>
 
-    <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
-      Create Account →
-    </button>
-
-    <div class="login-link">
-      Already have an account? <a href="01-login.html">Sign in</a>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" name="email" placeholder="alex@email.com">
     </div>
 
-  </form>
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" name="phone_number" placeholder="+1 (555) 000-0000">
+    </div>
+
+    <div class="field">
+      <label>City</label>
+      <input type="text" name="city" placeholder="New York">
+    </div>
+
+    <div class="field">
+      <label>Country</label>
+      <select name="country">
+        <option value="">Select country</option>
+        <option>India</option>
+        <option>USA</option>
+        <option>UK</option>
+        <option>Canada</option>
+      </select>
+    </div>
+
+    <div class="field" style="grid-column:1/-1;">
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Create a strong password">
+    </div>
+
+    <div class="field form-full">
+      <label>About You</label>
+      <textarea name="description" placeholder="Tell us about your travel style…"></textarea>
+    </div>
+
+  </div>
+
+  <button class="btn btn-primary btn-lg" style="width:100%;">
+    Create Account →
+  </button>
+
+</form>
 
 </div>
 
