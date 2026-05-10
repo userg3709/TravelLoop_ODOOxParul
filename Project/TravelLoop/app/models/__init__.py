@@ -1,7 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-
-db = SQLAlchemy()
+from app.db import db
 
 
 from app.models.itinerary_item import ItineraryItem

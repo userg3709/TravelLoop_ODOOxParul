@@ -1,6 +1,5 @@
 from app.models import db
 
-
 class Region(db.Model):
     __tablename__ = "regions"
 
