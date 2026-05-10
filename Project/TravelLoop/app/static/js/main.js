@@ -47,6 +47,8 @@
     });
 
     $$(".result-meta .btn").forEach((button) => {
+      if (button.type === "submit" || button.closest("form")) return;
+
       button.addEventListener("click", (event) => {
         event.stopPropagation();
         button.textContent = "Added";

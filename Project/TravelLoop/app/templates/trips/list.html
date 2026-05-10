@@ -32,6 +32,8 @@
 .trip-card-actions { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 20px 16px; border-left: 1px solid var(--border); flex-shrink: 0; }
 .trip-card-actions .action-btn { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--text-mid); font-family: var(--font-body); transition: all 0.2s; white-space: nowrap; }
 .trip-card-actions .action-btn.primary { background: var(--navy); color: white; border-color: var(--navy); }
+.trip-card-actions form { margin: 0; }
+.trip-card-actions form .action-btn { width: 100%; }
 .empty-trips { text-align: center; padding: 48px 24px; background: white; border-radius: var(--radius-md); border: 2px dashed var(--border); color: var(--text-light); }
 .bg-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
 .bg-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
@@ -106,6 +108,24 @@
             <div class="trip-card-actions">
               <button class="action-btn primary" onclick="event.stopPropagation();location.href='{{ url_for('main.itinerary', trip_id=trip.id) }}'">View</button>
               <button class="action-btn" onclick="event.stopPropagation();location.href='{{ url_for('main.itinerary_builder', trip_id=trip.id) }}'">Edit</button>
+              {% if key == 'upcoming' %}
+              <form method="post" action="{{ url_for('main.update_trip_status', trip_id=trip.id) }}" onclick="event.stopPropagation();">
+                <input type="hidden" name="status" value="ongoing">
+                <input type="hidden" name="next" value="{{ url_for('main.mytrips') }}">
+                <button class="action-btn" type="submit">Mark Ongoing</button>
+              </form>
+              <form method="post" action="{{ url_for('main.update_trip_status', trip_id=trip.id) }}" onclick="event.stopPropagation();">
+                <input type="hidden" name="status" value="completed">
+                <input type="hidden" name="next" value="{{ url_for('main.mytrips') }}">
+                <button class="action-btn" type="submit">Mark Completed</button>
+              </form>
+              {% elif key == 'ongoing' %}
+              <form method="post" action="{{ url_for('main.update_trip_status', trip_id=trip.id) }}" onclick="event.stopPropagation();">
+                <input type="hidden" name="status" value="completed">
+                <input type="hidden" name="next" value="{{ url_for('main.mytrips') }}">
+                <button class="action-btn" type="submit">Mark Completed</button>
+              </form>
+              {% endif %}
             </div>
           </div>
           {% endfor %}

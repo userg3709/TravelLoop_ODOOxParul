@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, timedelta
+from uuid import uuid4
 
 from werkzeug.security import generate_password_hash
 
@@ -15,6 +16,7 @@ SEED_TRIP_CODES = {
 
 def ensure_seed_data():
     if Trip.query.filter(Trip.trip_code.in_(SEED_TRIP_CODES)).first():
+        ensure_visible_itinerary_items()
         return
 
     user = User.query.order_by(User.id.asc()).first()
@@ -126,3 +128,112 @@ def ensure_seed_data():
             )
 
     db.session.commit()
+    ensure_visible_itinerary_items()
+
+
+def ensure_visible_itinerary_items():
+    updated = False
+    items = ItineraryItem.query.filter_by(region_id=None).all()
+    for item in items:
+        trip = db.session.get(Trip, item.trip_id)
+        if not trip:
+            continue
+
+        region = trip.regions[0] if trip.regions else None
+        if not region:
+            region = Region(
+                trip_id=trip.id,
+                name="Activity Stop",
+                city="Activity Stop",
+                country="India",
+            )
+            db.session.add(region)
+            db.session.flush()
+
+        item.region_id = region.id
+        updated = True
+
+    if updated:
+        db.session.commit()
+
+
+def add_dummy_data(user=None):
+    user = user or User.query.order_by(User.id.asc()).first()
+    if not user:
+        user = User(
+            first_name="Demo",
+            last_name="Traveler",
+            email=f"demo-{uuid4().hex[:8]}@travelloop.local",
+            phone_number="+91 90000 00000",
+            city="Vadodara",
+            country="India",
+            description="Temporary demo profile for testing TravelLoop data flows.",
+            password_hash=generate_password_hash("demo"),
+        )
+        db.session.add(user)
+        db.session.flush()
+
+    suffix = uuid4().hex[:6].upper()
+    trip = Trip(
+        trip_code=f"DUMMY-{suffix}",
+        user_id=user.id,
+        trip_name=f"Dummy Goa Planning Trip {suffix}",
+        start_date=date.today() + timedelta(days=21),
+        end_date=date.today() + timedelta(days=25),
+        description="Generated dummy trip for testing itinerary sections, activities, budgets, and status actions.",
+        status="planned",
+    )
+    db.session.add(trip)
+    db.session.flush()
+
+    regions = [
+        Region(
+            trip_id=trip.id,
+            name="Panaji",
+            city="Panaji",
+            country="India",
+            start_date=trip.start_date,
+            end_date=trip.start_date + timedelta(days=1),
+        ),
+        Region(
+            trip_id=trip.id,
+            name="South Goa",
+            city="South Goa",
+            country="India",
+            start_date=trip.start_date + timedelta(days=2),
+            end_date=trip.end_date,
+        ),
+    ]
+    db.session.add_all(regions)
+    db.session.flush()
+
+    db.session.add_all(
+        [
+            ItineraryItem(
+                trip_id=trip.id,
+                region_id=regions[0].id,
+                title="Fontainhas heritage walk",
+                description="Dummy activity in Panaji for route and activity-card testing.",
+                budget_amount=1200,
+                currency="INR",
+            ),
+            ItineraryItem(
+                trip_id=trip.id,
+                region_id=regions[0].id,
+                title="Mandovi river cruise",
+                description="Evening dummy activity with budget data.",
+                budget_amount=1800,
+                currency="INR",
+            ),
+            ItineraryItem(
+                trip_id=trip.id,
+                region_id=regions[1].id,
+                title="Colva beach morning",
+                description="Dummy beach stop used to verify itinerary rendering.",
+                budget_amount=900,
+                currency="INR",
+            ),
+        ]
+    )
+    db.session.commit()
+    return trip

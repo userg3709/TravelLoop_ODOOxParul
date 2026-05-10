@@ -29,10 +29,14 @@
 .result-tag { background: var(--sand-light); color: var(--text-mid); border-radius: 20px; padding: 3px 10px; font-size: 0.72rem; font-weight: 500; }
 .result-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
 .result-price { font-family: var(--font-display); font-size: 1.25rem; color: var(--navy); font-weight: 700; }
+.add-activity-form { display: grid; gap: 8px; min-width: 220px; }
+.add-activity-form select { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font: inherit; color: var(--navy); background: white; }
+.add-activity-form .hint { color: var(--text-light); font-size: 0.72rem; text-align: right; }
 .search-hero { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; display: flex; gap: 12px; }
 .search-hero-input { flex: 1; display: flex; align-items: center; gap: 10px; background: var(--sand-light); border-radius: var(--radius-sm); padding: 12px 16px; }
 .search-hero-input input { flex: 1; border: none; outline: none; background: transparent; font-family: var(--font-body); font-size: 0.95rem; color: var(--text-dark); }
 @media (max-width: 768px) { .search-layout { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { flex-direction: column; } .result-meta { flex-direction: row; align-items: center; } }
+@media (max-width: 768px) { .add-activity-form { width: 100%; } .add-activity-form .hint { text-align: left; } }
 </style>
 </head>
 <body>
@@ -101,7 +105,25 @@
             </div>
             <div class="result-meta">
               <div class="result-price">{{ activity.currency }} {{ activity.price }}</div>
-              <button class="btn btn-primary btn-sm" type="button">+ Add to Trip</button>
+              <form class="add-activity-form" method="post" action="{{ url_for('main.add_activity_to_trip') }}">
+                <input type="hidden" name="title" value="{{ activity.title }}">
+                <input type="hidden" name="location" value="{{ activity.location }}">
+                <input type="hidden" name="category" value="{{ activity.category }}">
+                <input type="hidden" name="duration" value="{{ activity.duration }}">
+                <input type="hidden" name="price" value="{{ activity.price }}">
+                <input type="hidden" name="currency" value="{{ activity.currency }}">
+                <select name="trip_id" aria-label="Choose trip for {{ activity.title }}" required>
+                  {% if active_trips %}
+                  <option value="" selected disabled>Choose a trip</option>
+                  {% for trip in active_trips %}
+                  <option value="{{ trip.id }}">{{ trip.trip_name }} - {{ trip.status|title }}</option>
+                  {% endfor %}
+                  {% endif %}
+                  <option value="new">Create new trip</option>
+                </select>
+                <button class="btn btn-primary btn-sm" type="submit">Add Activity</button>
+                <div class="hint">Adds to an active trip or starts a new one</div>
+              </form>
             </div>
           </div>
           {% endfor %}
