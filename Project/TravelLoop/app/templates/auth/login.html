@@ -4,86 +4,119 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traveloop – Login</title>
 <link rel="stylesheet" href="styles.css">
+
 <style>
 body { background: var(--navy); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
 .login-wrap { display: grid; grid-template-columns: 1fr 1fr; max-width: 960px; width: 100%; min-height: 580px; border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-lg); }
+
 .login-left { background: linear-gradient(160deg, #0f1f3d 0%, #1a3a6a 50%, #0d2840 100%); padding: 56px 48px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
 .login-left::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E"); }
-.login-left-brand { position: relative; }
-.login-left-brand .logo { font-family: var(--font-display); font-size: 2rem; color: white; font-weight: 700; letter-spacing: -0.02em; }
+
+.login-left-brand .logo { font-family: var(--font-display); font-size: 2rem; color: white; font-weight: 700; }
 .login-left-brand .logo span { color: var(--amber-light); }
 .login-left-brand .tagline { color: rgba(255,255,255,0.55); font-size: 0.875rem; margin-top: 6px; }
-.login-left-content { position: relative; }
+
 .login-left-content h2 { font-family: var(--font-display); font-size: 2.25rem; color: white; line-height: 1.2; margin-bottom: 16px; font-style: italic; }
 .login-left-content h2 em { color: var(--amber-light); font-style: normal; }
 .login-left-content p { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.7; }
-.feature-pills { display: flex; flex-direction: column; gap: 10px; position: relative; margin-top: 24px; }
+
+.feature-pills { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
 .feature-pill { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 40px; padding: 10px 16px; color: rgba(255,255,255,0.85); font-size: 0.82rem; }
-.feature-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber-light); flex-shrink: 0; }
+.feature-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber-light); }
+
 .login-right { background: var(--cream); padding: 56px 48px; display: flex; flex-direction: column; justify-content: center; }
 .login-right h3 { font-family: var(--font-display); font-size: 1.75rem; color: var(--navy); margin-bottom: 4px; }
 .login-right .sub { color: var(--text-light); font-size: 0.875rem; margin-bottom: 32px; }
+
 .form-stack { display: flex; flex-direction: column; gap: 18px; }
-.avatar-upload { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--sand), var(--sand-light)); border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; margin: 0 auto 24px; transition: all 0.2s; }
-.avatar-upload:hover { border-color: var(--amber); background: #fef3c7; }
-.forgot-link { text-align: right; }
+
+.field label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-dark); }
+.field input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; }
+
+.forgot-link { text-align: right; margin-top: 6px; }
 .forgot-link a { color: var(--amber); font-size: 0.8rem; font-weight: 500; text-decoration: none; }
-.forgot-link a:hover { text-decoration: underline; }
+
 .divider-or { display: flex; align-items: center; gap: 12px; color: var(--text-light); font-size: 0.8rem; }
 .divider-or::before, .divider-or::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
 .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: white; font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; color: var(--text-dark); cursor: pointer; transition: all 0.2s; }
-.social-btn:hover { border-color: var(--navy); transform: translateY(-1px); }
+
+.social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: white; font-size: 0.85rem; cursor: pointer; }
+
 .signup-link { text-align: center; font-size: 0.85rem; color: var(--text-light); margin-top: 4px; }
 .signup-link a { color: var(--amber); font-weight: 600; text-decoration: none; }
-.signup-link a:hover { text-decoration: underline; }
+
 @media (max-width: 700px) {
   .login-wrap { grid-template-columns: 1fr; }
   .login-left { display: none; }
   .login-right { padding: 40px 28px; }
 }
 </style>
+
 </head>
+
 <body>
+
 <div class="login-wrap fade-in">
+
   <div class="login-left">
     <div class="login-left-brand">
       <div class="logo">Travel<span>oop</span></div>
       <div class="tagline">Your intelligent travel companion</div>
     </div>
+
     <div class="login-left-content">
       <h2>Plan your next <em>adventure</em> with ease</h2>
       <p>Build multi-city itineraries, track budgets, and share your journeys with a global community of explorers.</p>
+
       <div class="feature-pills">
         <div class="feature-pill"><div class="dot"></div>Smart itinerary builder</div>
         <div class="feature-pill"><div class="dot"></div>Real-time budget tracking</div>
         <div class="feature-pill"><div class="dot"></div>Community trip sharing</div>
       </div>
     </div>
-    <div style="color:rgba(255,255,255,0.3);font-size:0.75rem;position:relative;">© 2025 Traveloop. All rights reserved.</div>
+
+    <div style="color:rgba(255,255,255,0.3);font-size:0.75rem;position:relative;">
+      © 2025 Traveloop. All rights reserved.
+    </div>
   </div>
+
   <div class="login-right">
     <h3>Welcome back</h3>
     <div class="sub">Sign in to continue your journey</div>
-    <div class="form-stack">
+
+    <form action="/login" method="POST" class="form-stack">
+
       <div class="field">
         <label>Email Address</label>
-        <input type="email" placeholder="you@example.com">
+        <input type="email" name="email" placeholder="you@example.com" required>
       </div>
+
       <div class="field">
         <label>Password</label>
-        <input type="password" placeholder="••••••••••">
+        <input type="password" name="password" placeholder="••••••••••" required>
         <div class="forgot-link"><a href="#">Forgot password?</a></div>
       </div>
-      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Sign In →</button>
+
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+        Login
+      </button>
+
       <div class="divider-or">or continue with</div>
+
       <div class="social-btns">
-        <button class="social-btn">🌐 Google</button>
-        <button class="social-btn">🍎 Apple</button>
+        <button type="button" class="social-btn">🌐 Google</button>
+        <button type="button" class="social-btn">🍎 Apple</button>
       </div>
-      <div class="signup-link">Don't have an account? <a href="02-register.html">Sign up free</a></div>
-    </div>
+
+      <div class="signup-link">
+        Don't have an account? <a href="02-register.html">Sign up free</a>
+      </div>
+
+    </form>
   </div>
+
 </div>
+
 </body>
 </html>
